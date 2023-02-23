@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet" />
+
+
+
+<div id="progress-bar"></div>
+
+<div class="readind_stuff">
+
+    <div id="box" style="padding:5.7%;">
+        <div class="callout">
+            <!-- <h6 style="float: right;">by {{message.author}}</h6> -->
+            <h6 style="float: right;  padding-bottom:5%" class="float-sm float-end">{{message.timestamp}} <br>By {{message.author}}</h6>
+
+
+        </div>
+        <h1 style="padding-bottom:5%;"><u class=line>{{message.title}} </u></h1>
+
+        {% for i in content %}
+        <p>
+            {{i}}
+        </p>
+        {% endfor %}
+
+            <form >
+                <button type="submit" class="fill" formaction="{{url_for('write')}}">Reply Now ?</button>
+            </form>
+  
+
+
+    </div>
+
+</div>
+<!-- too remember the scroll positions -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+    if (localStorage.getItem("my_app_name_here-quote-scroll") != null) {
+        $(window).scrollTop(localStorage.getItem("my_app_name_here-quote-scroll"));
+    }
+
+    $(window).on("scroll", function() {
+        localStorage.setItem("my_app_name_here-quote-scroll", $(window).scrollTop());
+    });
+
+  });
+</script>
+{% endblock %}

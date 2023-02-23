@@ -1,0 +1,23 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "project bff",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "bff",
+  "start_url": "/",
+  "theme_color": " #ffccff",
+  "icons": [
+    {
+      "src": "/65x65.png",
+      "type": "image/png",
+      "sizes": "65x65"
+    },
+    {
+      "src": "/512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

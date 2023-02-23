@@ -1,0 +1,13 @@
+flask
+pymongo
+mongoengine
+dnspython
+flask_login
+flask_mongoengine
+pytz
+Flask-WTF==0.15.1
+gunicorn==20.0.4
+requests==2.24.0
+twilio
+python-dotenv
+jinja2==3.0.3
