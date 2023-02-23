@@ -1,0 +1,20 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: projectbff93
+    src: .
+    engine: python3.9
+    public_routes:
+      - "/*" # exact match
+    primary: true
+    presets:
+      env:
+        - name: DB_URI
+          default: ""
+        - name: account_sid
+          default: ""
+        - name: auth_token
+          default: ""
+        - name: messaging_service_sid
+          default: ""
+          
