@@ -45,4 +45,4 @@ create a .env file inside message/ and add the following variables
     messaging_service_sid=""
 ```
 
-[You need to add a Spacefile before deployment](https://deta.space/docs/en/reference/spacefile)
+[You need to add a Spacefile before deployment ](https://deta.space/docs/en/reference/spacefile)
