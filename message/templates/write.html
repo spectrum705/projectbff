@@ -6,7 +6,6 @@
         <div class="info">
         <p><strong>if you can't finish in one go, please click "finish later" to save it for later</strong></p>
     </div> -->
-
     <form method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> {{form.hidden_tag()}}
 
@@ -22,14 +21,14 @@
 
 </div>
 <script>
-    thetitle.value = localStorage.getItem('thetitle');
+    thetitle.value = localStorage.getItem('thetitle_{{ userId }}');
     thetitle.oninput = () => {
-        localStorage.setItem('thetitle', thetitle.value)
+        localStorage.setItem('thetitle_{{ userId }}', thetitle.value)
     };
 
-    thecontent.value = localStorage.getItem('thecontent');
+    thecontent.value = localStorage.getItem('thecontent_{{ userId }}');
     thecontent.oninput = () => {
-        localStorage.setItem('thecontent', thecontent.value)
-    };
+        localStorage.setItem('thecontent_{{ userId }}', thecontent.value)
+    };  
 </script>
 {% endblock %}

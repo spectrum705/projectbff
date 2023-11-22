@@ -21,7 +21,7 @@ CSRFProtect(app)
 # remove the limit for csrf token
 app.config['WTF_CSRF_TIME_LIMIT'] = None
 
-app.secret_key  = "hori-san"
+app.secret_key  = "croe24XcDSEdrr"
 #login 
 login_manager = LoginManager(app)
 

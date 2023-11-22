@@ -18,16 +18,6 @@ account_sid = os.getenv('account_sid') or os.environ["account_sid"]
 auth_token  = os.getenv('auth_token') or os.environ["auth_token"]
 messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messaging_service_sid"]
 
-print('----------------ENV LIST--------------')
-
-print("DB_URI",DB_URI)
-print("account_sid",account_sid)
-print("auth_token",auth_token)
-print("messaging_service_sid",messaging_service_sid)
-
-
-
-print('---------------------------------------')
 
 
 @app.route('/', methods=["POST","GET"])
@@ -173,7 +163,7 @@ def write():
             print(">sent sms!")
             return redirect(url_for("home"))
 
-        return render_template("write.html",form = form)
+        return render_template("write.html", form = form, userId=current_user["id"] )
     except:
         return redirect(url_for("login"))
 
@@ -201,7 +191,7 @@ def letter(id):
         return redirect(url_for("login"))
 
 @app.route('/about')
-@login_required
+# @login_required
 def about():
     
     return render_template("about.html")
