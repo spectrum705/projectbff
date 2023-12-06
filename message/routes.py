@@ -1,6 +1,6 @@
 import random
 from flask import render_template, redirect, url_for, Flask, flash, session, request
-from message.forms import LoginForm, WriteForm
+from message.forms import LoginForm, WriteForm, NewUserForm
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager
 from message import app
 from message.models import User, Letters
@@ -10,13 +10,16 @@ from datetime import datetime
 from message.notify import send_sms
 from dotenv import load_dotenv
 import os
+from mongoengine import ValidationError
+
 load_dotenv()
 
 
-DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
-account_sid = os.getenv('account_sid') or os.environ["account_sid"]
-auth_token  = os.getenv('auth_token') or os.environ["auth_token"]
-messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messaging_service_sid"]
+# DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
+# account_sid = os.getenv('account_sid') or os.environ["account_sid"]
+# auth_token  = os.getenv('auth_token') or os.environ["auth_token"]
+# messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messaging_service_sid"]
+
 
 
 
@@ -24,6 +27,7 @@ messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messagi
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("home"))
+    
     # if "user" in session:
     #     return redirect(url_for("home"))
     form = LoginForm()
@@ -45,17 +49,77 @@ def login():
             flash("Wrong username or password, check again.", "danger") 
     return render_template("login.html", title='Login', form = form)
 
+
+def SearchUser(username):
+    return User.objects(username=username).first()
+
+@app.route('/create', methods=['GET', 'POST'])
+def create():
+    form = NewUserForm()
+
+    # Populate partner choices from the database
+    form.partners.choices = [(user.username, user.username) for user in User.objects()]
+
+
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        mobile = form.mobile.data
+        
+        # Check if the username is already taken
+        existing_user = User.objects(username=username).first()
+        if existing_user:
+            flash('Username is already taken. Please choose a different one.', 'danger')
+            return redirect(url_for('create'))
+
+        # Hash the password before storing it
+        # hashed_password = generate_password_hash(password, method='sha256')
+
+        # Create a new user
+        new_user = User(myid=random.randint(1,10000),username=username, password=password, mobile=mobile)
+
+        list_of_partners  = form.partners.data
+        print("1>>>>>>>>>", form.partners.data)
+        
+
+
+        new_user.partners=list_of_partners
+        new_user.save()
+        #TODO update the partner for other user too (append i think)
+        for each_selected_user in list_of_partners:
+            user=SearchUser(each_selected_user)
+            user.partners.append(username)
+            user.save()
+            
+
+        flash('Account created successfully! You can now log in.', 'success')
+        return redirect(url_for('login'))
+        
+         
+
+    return render_template('create.html', form=form)
+
+
+
+
+
+
 # @login_required #works use this
 @app.route('/home')
 @login_required
 def home():
+    
     # if "user" not in session:
     #     return redirect(url_for("login"))
-    
     # current_user = session["user"]
-    sortedLetters=sorted(Letters.objects(author=current_user["partner"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
     
-   
+    # eariler the letters were retrieved by author field
+    # sortedLetters=sorted(Letters.objects(author=current_user["partners"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    
+    #  after we add reciever field in letter we need to sort letters by that instead of author
+    # sortedLetters=sorted(Letters.objects(reciever=current_user), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    
+    sortedLetters="hi"
     return render_template("index.html", letters = sortedLetters)
    
     #uncomment these later
@@ -157,6 +221,7 @@ def write():
             to=User.objects(username=current_user["partner"]).first().mobile 
             url="https://tinyurl.com/projectbffs"
             print("to:",to)
+            # need to change partner into specific reciver
             body = f"Hi {random.choice(adj)} {session['user']['partner']}, Hope you are smiling. {current_user['username']} just sent you a letter in ProjectBFF. The title says '{form.title.data}'. Take a read whenever you want, here's the link {url}. see ya :)"
             print('>> before sms function call')
             send_sms(to=to, body=body)
@@ -200,7 +265,7 @@ def about():
 
 @app.route('/logout')
 def logout():
-    session.pop("user",None)
+    # session.pop("user",None)
     logout_user()
 
     return redirect(url_for(("login")))

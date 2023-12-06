@@ -10,31 +10,35 @@ def load_user(user_id):
 
 class User(db.Document, UserMixin):
     username = db.StringField(required=True, unique=True)
-    partner = db.StringField(required=True)
+    
+    partners = db.ListField(db.StringField())
+
     password = db.StringField(required=True)
-    mobile = db.StringField(required=True)
+    mobile = db.StringField()
     # _id = ObjectId()#db(required=True,unique=True, default=str(random.randint(1,10000)))
-    # myid= db.IntField(db_field='id',unique=True,required=True,default=(random.randint(1,10000)))
+    myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))
     # print uuid.uuid4()
-    myid= db.StringField(db_field='id',unique=True,required=True,default=str(uuid.uuid4()))
-  
+    # myid= db.StringField(db_field='id',unique=True,required=True,default=str(uuid.uuid4()))
+    # _id=db.IntField(db_field='id', required=True,default=(random.randint(1,10000)))
+
     def to_json(self):
         return {
             "username":self.username,
             "password":self.password,
             "id":self.myid,
-            "partner": self.partner
+            "partner": self.partners
         }
     def __repr__(self):
-        return f"User('{self.username}','{self.myid}',{self.partner})"
+        return f"User('{self.username}','{self.myid}',{self.partners})"
 
 class Letters(db.Document):
     title=  db.StringField(required=True)
     content = db.StringField(required=True)
-    # author = db.ReferenceField(User, dbref=True)  
-    author = db.StringField(required=True)
+    author = db.ReferenceField(User, dbref=True)  # if doesnt work use StringField with just username
+    # author = db.StringField(required=True)
+    reciever = db.ReferenceField(User, dbref=True)
     status = db.StringField(required=True) #draft/sent/seen
-    # status = db.StringField()
+    # status = db.StringField() 
     timestamp = db.StringField()#default=now)
     myid= db.StringField(db_field='id',unique=True,required=True,default=str(uuid.uuid4()))
     
@@ -47,6 +51,8 @@ class Letters(db.Document):
             "author":self.author,
             "title":self.title,
             "timestamp": self.timestamp,
+            "status": self.status,
+            "reciever":self.reciever,
             # "id": self.myid
             
             # "time":self.timestamp
@@ -63,5 +69,10 @@ class Letters(db.Document):
 # asiaTime= pytz.timezone('Asia/Kolkata')   
 # datetime_ind = datetime.now(asiaTime)  
 # timeStamp = datetime_ind.strftime("%Y-%m-%d %H:%M:%S.%f")
-
 # dates=["23:40, 19-09-2021", "23:41, 19-09-2021", "04:55, 20-09-2021","00:08, 20-01-2021", "00:01, 21-09-2021","06:17, 20-09-2021"]
+
+#How to add new user
+#do inside main.py
+# from message.models import User
+# new=User(username='kirito',partner='asuna',password='test')
+# new.save()

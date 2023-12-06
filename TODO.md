@@ -1,11 +1,20 @@
 1 change About page DONE
+[AT WORSE CASE IF NOTHING WORKS, KEEP PARTNER FEILD AS LIST OF USERNAMES] DONE
 2 Add new test user pair
-2.1 Make a streamlined way to create new unique user event (lay foundation)
-2.2 check what happens when one user has 2 different partnerls
+2.1 Make a streamlined way to create new unique user account (lay foundation) DONE
+2.12 MAKE A NV LINK FOR CREATE USER DONE
+2.2 check what happens when one user has 2 different partnerls DONE
     NEED TO ADD RECEIVER FIELD IN THE LETTER DB 
-    CONSIDERING UPDATING THE MODELS + NEW RELATIONSHIP MODEL
-2.3 find a way to set a user with 2 partners
+    MAKE CHANGES EVERYWHERE WHERE 'PARTNER' FIELD IS USED AS STRING
+    in case the user uses the ’reply’ auto select the receiving partner
+    LET PARNTER BE LISTFIELD OF USERS, WHEN ONE USER ADDS OTHER AS PARTNER THE FIELD SHOULD BE UPDATED FOR BOTH
+    USER CAN ONLY CHOOSE PARTNER WHILE MAKING ACCOUNT DONE
+    ADD MOBILE FIELD IN REGISTERATION PAGE   DONE
+2.3 find a way to set a user with 2 partners  DONE
     MAYBE HAVE INTERNALY LINK THE RECIEVING USER WITH REPLY BUTTON
+2.4 create a page for adding new user DONE
+2.5 TEST SENDING LETTERS TO DIFFERENT PARTNER
+2.6 MODIFY THE LETTERS FOR RECIEVING USER 
+2.7 CHECK RESPONSIVENESS OF EVERYTHING
 3 Update README
-4 check why you get a flash message to login when you press back after about page DONE  
-5 deploy and test
+4    deploy and test
