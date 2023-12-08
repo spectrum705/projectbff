@@ -25,8 +25,9 @@
             {{i}}
         </p>
         {% endfor %}
-
             <form >
+                <input type="hidden" name="PreSelect" value="{{ message .author }}">
+
                 <button type="submit" class="fill" formaction="{{url_for('write')}}">Reply Now ?</button>
             </form>
   

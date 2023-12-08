@@ -15,52 +15,57 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
     <!-- Link Bootstrap CSS from CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<!-- Add Bootstrap CSS from CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <!-- Your other head content remains the same -->
+
+    <!-- Add Bootstrap JS and Popper.js from CDN -->
 
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
     <script type="module">
         import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
         const el = document.createElement('pwa-update');
         document.body.appendChild(el);
      </script>
 </head>
-
 <body>
 
-    <!-- ======= Header ======= -->
-    <header id="header">
-        <!-- Navbar with container-fluid for full-width container -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{url_for('login')}}">
-                    <h1 style="align-items: center; font-size: 1.7em;"> <u class="projectline">Project Best Friends Forever :)</u></h1>
-                </a>
-                <!-- Toggle button for small screens -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <!-- Navbar links -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('about')}}">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{url_for('create')}}">New User</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
+   <!-- ======= Header ======= -->
+<header id="header">
+    <!-- Navbar with container-fluid for full-width container -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{url_for('login')}}">
+                <h1 style="align-items: center; font-size: 1.7em;"> <u class="projectline">Project Best Friends Forever :)</u></h1>
+            </a>
+            <!-- Toggle button for small screens -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('about')}}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('create')}}">New User</a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
+
    
     <!-- ======= Hero Section ======= -->
 
@@ -71,7 +76,6 @@
         </div>
         {% endfor %} {% endif %} {% endwith %}
 
-        <!-- ======= Pricing Section ======= -->
         {% block content %} {% endblock %}
     </main>
     <!-- End #main -->
@@ -93,6 +97,8 @@
             });
         }
     </script>
+
+    
 </body>
 
 <!-- Option 1: Bootstrap Bundle with Popper -->

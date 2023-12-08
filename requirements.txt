@@ -4,6 +4,7 @@ mongoengine
 dnspython
 flask_login
 flask_mongoengine
+flask-bcrypt
 pytz
 Flask-WTF
 gunicorn==20.0.4

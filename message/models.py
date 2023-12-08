@@ -34,13 +34,12 @@ class User(db.Document, UserMixin):
 class Letters(db.Document):
     title=  db.StringField(required=True)
     content = db.StringField(required=True)
-    author = db.ReferenceField(User, dbref=True)  # if doesnt work use StringField with just username
-    # author = db.StringField(required=True)
-    reciever = db.ReferenceField(User, dbref=True)
+    author = db.StringField(required=True)
+    reciever = db.StringField(required=True)
     status = db.StringField(required=True) #draft/sent/seen
-    # status = db.StringField() 
     timestamp = db.StringField()#default=now)
-    myid= db.StringField(db_field='id',unique=True,required=True,default=str(uuid.uuid4()))
+    myid= db.StringField(db_field='id',primary_key=True, required=True,default=str(uuid.uuid4()))
+
     
     # generating random id for each letter
     # _id = db.IntField()
@@ -73,6 +72,13 @@ class Letters(db.Document):
 
 #How to add new user
 #do inside main.py
-# from message.models import User
+# from message.models import User, Letter
 # new=User(username='kirito',partner='asuna',password='test')
 # new.save()
+
+# letter=Letters(title=form.title.data, 
+#             content=form.content.data,
+#             author=current_user["username"],
+#             status="sent", myid=str(uuid.uuid4()) ,timestamp=now,
+#             receiver=selected_partner)
+# l=Letters(title="test",content="test",author="test",reciever="test",status="test",timestamp="test",myid="test")

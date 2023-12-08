@@ -3,6 +3,8 @@ from flask_login import login_user, current_user, logout_user, login_required, L
 from flask import Flask
 import mongoengine as db
 from flask_wtf.csrf import CSRFProtect
+from flask_bcrypt import Bcrypt
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -15,7 +17,7 @@ DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
 
 db.connect(host=DB_URI)
 app = Flask(__name__)
-
+bcrypt = Bcrypt(app)
 CSRFProtect(app)
 
 # remove the limit for csrf token

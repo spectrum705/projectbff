@@ -2,7 +2,7 @@ import random
 from flask import render_template, redirect, url_for, Flask, flash, session, request
 from message.forms import LoginForm, WriteForm, NewUserForm
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager
-from message import app
+from message import app, bcrypt
 from message.models import User, Letters
 import pytz     
 import uuid
@@ -33,11 +33,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(username=form.username.data.lower().strip()).first()
-        # print("urs:",form.username.data)
-        # print("pwd:", form.password.data)
-        # print("userinDb",user)
-        # print("pwd:",user.password)
-        if user is not None and form.password.data.strip() == user.password:
+       
+        if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip()) :
+
             session["user"] = user.to_json()#form.username.data
             session.permanent = True
 
@@ -62,9 +60,9 @@ def create():
 
 
     if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        mobile = form.mobile.data
+        username = form.username.data.strip()
+        password = form.password.data.strip()
+        mobile = form.mobile.data.strip()
         
         # Check if the username is already taken
         existing_user = User.objects(username=username).first()
@@ -74,9 +72,10 @@ def create():
 
         # Hash the password before storing it
         # hashed_password = generate_password_hash(password, method='sha256')
+        password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
 
         # Create a new user
-        new_user = User(myid=random.randint(1,10000),username=username, password=password, mobile=mobile)
+        new_user = User(myid=random.randint(1,10000),username=username, password=password_hash, mobile=mobile)
 
         list_of_partners  = form.partners.data
         print("1>>>>>>>>>", form.partners.data)
@@ -117,9 +116,9 @@ def home():
     # sortedLetters=sorted(Letters.objects(author=current_user["partners"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
     
     #  after we add reciever field in letter we need to sort letters by that instead of author
-    # sortedLetters=sorted(Letters.objects(reciever=current_user), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    sortedLetters=sorted(Letters.objects(reciever=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
     
-    sortedLetters="hi"
+    # sortedLetters=None
     return render_template("index.html", letters = sortedLetters)
    
     #uncomment these later
@@ -151,13 +150,20 @@ def home():
 #         myid=str(uuid.uuid4()))
 #         letter.save()
 #         print("saved in draft")
+
+
+@app.route('/test',methods=["POST","GET"])
+def test():
+    form= WriteForm()
+    userId=7242
+    return render_template("write.html", form = form, userId=userId )
+
 @app.route('/write',methods=["POST","GET"])
 @login_required
 def write():
     
     try:
-        # prevLetter =Letters.objects(author=session["user"]["username"], status = "draft").first()
-        prevLetter =Letters.objects(author=current_user["username"], status = "draft").first()
+        # prevLetter =Letters.objects(author=current_user["username"], status = "draft").first()
         
         form = WriteForm()   
         #making a button to get draft item if exist
@@ -187,7 +193,23 @@ def write():
         #     flash("okay, it's saved you can finish later ;)" , "info")
         #     return redirect(url_for("home"))
 
+        # list of partners
+        # PreSelect = request.args.get('PreSelect')
+        # if PreSelect:
+        #     form.receiver.choices = [(PreSelect,PreSelect)] + [(partner, partner)  for partner in current_user['partners'] if partner!=PreSelect]
         
+        # else:
+        #     form.receiver.choices = [('', 'Who are you writing to?')] + [(partner, partner) for partner in current_user['partners']]
+        
+        PreSelect = request.args.get('PreSelect')
+        form.receiver.choices = [(PreSelect, PreSelect)] + [(partner, partner) for partner in current_user['partners'] if partner != PreSelect] if PreSelect else [('', 'Who are you writing to?')] + [(partner, partner) for partner in current_user['partners']]
+
+
+
+
+        print("choices:", form.receiver.choices)
+        print("PRESELECT in write page got it from the reply button:",PreSelect, type(PreSelect))
+
         if form.validate_on_submit():
             asiaTime= pytz.timezone('Asia/Kolkata')   
             datetime_ind = datetime.now(asiaTime)  
@@ -200,17 +222,32 @@ def write():
             #     content=form.content.data,status="sent",timestamp=now, myid=str(uuid.uuid4()))
             #     return redirect(url_for("home"))
 
-            
             # else:
-            print("title:", form.title.data)
-            print("content:", form.content.data)
-            flash(f'Letter sent, Thank you for making {current_user["partner"]} Happy :)',"info")
-            letter=Letters(title=form.title.data, 
-            content=form.content.data,
-            author=current_user["username"],
-            status="sent", myid=str(uuid.uuid4()) ,timestamp=now)
+            if PreSelect:
+                form.receiver.data=PreSelect
+            selected_partner = form.receiver.data
+            # print("title:", form.title.data)
+            # print("content:", form.content.data)
+            # print("author:", current_user["username"])
+            # print("status:", "sent")
+            # print("timestamp:", now)
+            # print("receiver:", form.receiver.data)
+            print("title:",  form.title.data, type(form.title.data))
+            print("content:", form.content.data, type(form.content.data))
+            print("author:", current_user["username"])
+            print("status:", "sent")
+            print("timestamp:", now)
+            print("receiver:", form.receiver.data, type(form.receiver.data))
+
+            title=form.title.data
+            content=form.content.data
+            author=current_user["username"] 
+            receiver=selected_partner 
+            letter=Letters(title=title,content=content,author=author,reciever=receiver,status="sent",timestamp=now, myid=str(uuid.uuid4()) )
 
             letter.save()
+            print("LETTERRRR SAVED !!!")
+            flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
             print(letter.to_json())
             # notify the partner with sms
             # make a list of cute adjectives
@@ -227,8 +264,8 @@ def write():
             send_sms(to=to, body=body)
             print(">sent sms!")
             return redirect(url_for("home"))
-
-        return render_template("write.html", form = form, userId=current_user["id"] )
+        print('>>>>>USR ID',current_user["myid"])
+        return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
     except:
         return redirect(url_for("login"))
 
@@ -242,14 +279,16 @@ def letter(id):
         #make status to read !
         print(toRead.author)
         print("username:",current_user['username'])
-        print(current_user["partner"])
+        print(current_user["partners"])
         if current_user['username'] != toRead.author:
-            if toRead.author == current_user["partner"] and toRead.status == "sent":
+            if toRead.author in current_user["partners"] and toRead.status == "sent":
                 Letters.objects(myid=id).update(status="read")
             para = toRead.content.split('\n')
             para = [x for x in para if x]
             print(toRead.status)
-            return render_template("letter.html", message=toRead, content=para)
+            PreSelect=toRead.author
+            print("preselect from letter page:",PreSelect)
+            return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect)
         else:
             return redirect(url_for("home"))
     except:
