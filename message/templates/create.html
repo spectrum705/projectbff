@@ -125,10 +125,10 @@
         /* Styles for the list of partners */
         ul {
             list-style: none;
-            padding: 0;
+            padding-right: 4em;
             margin: 0;
             text-align: left;
-            max-height: 150px; /* Set a maximum height for the list */
+            max-height: 85px; /* Set a maximum height for the list */
             overflow-y: auto; /* Enable vertical scrolling if content exceeds the maximum height */
         }
 
@@ -161,7 +161,16 @@
         <h2>Register</h2>
         <label for="username">Username:</label>
         {{ form.username }}
+        
+        
+        <h5>pick Pass-Phrase and don't lose it, examples.</h5> 
+        <ul>
+            <li>>  I l0ve ch0c0late c@ke!</li>
+          
+            <li>>panda$glow$chess$swarm</li>
+        </ul>
         <label for="password">Password:</label>
+               
         {{ form.password }}
         <label for="confirm_password">Confirm Password:</label>
         {{ form.confirm_password }}

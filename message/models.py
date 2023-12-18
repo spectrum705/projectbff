@@ -3,6 +3,7 @@ from message import db, login_manager
 import random
 # from bson.objectid import ObjectId
 import uuid
+from wtforms import StringField
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -14,6 +15,8 @@ class User(db.Document, UserMixin):
     partners = db.ListField(db.StringField())
 
     password = db.StringField(required=True)
+    public_key = db.StringField(required=True)
+    private_key = db.StringField(required=True)
     mobile = db.StringField()
     # _id = ObjectId()#db(required=True,unique=True, default=str(random.randint(1,10000)))
     myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))
@@ -35,9 +38,11 @@ class Letters(db.Document):
     title=  db.StringField(required=True)
     content = db.StringField(required=True)
     author = db.StringField(required=True)
-    reciever = db.StringField(required=True)
+    receiver = db.StringField(required=True)
     status = db.StringField(required=True) #draft/sent/seen
     timestamp = db.StringField()#default=now)
+    symmetric_key = db.StringField()
+    signature = db.StringField()
     myid= db.StringField(db_field='id',primary_key=True, required=True,default=str(uuid.uuid4()))
 
     
@@ -51,7 +56,7 @@ class Letters(db.Document):
             "title":self.title,
             "timestamp": self.timestamp,
             "status": self.status,
-            "reciever":self.reciever,
+            "receiver":self.receiver,
             # "id": self.myid
             
             # "time":self.timestamp
@@ -81,4 +86,4 @@ class Letters(db.Document):
 #             author=current_user["username"],
 #             status="sent", myid=str(uuid.uuid4()) ,timestamp=now,
 #             receiver=selected_partner)
-# l=Letters(title="test",content="test",author="test",reciever="test",status="test",timestamp="test",myid="test")
+# l=Letters(title="test",content="test",author="test",receiver="test",status="test",timestamp="test",myid="test")

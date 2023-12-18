@@ -1,6 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <!-- make add some instructions about formatting texts -->
-
+<style>
+    div{
+        zoom: 0.9;
+    }
+</style>
 <div style="padding-left: 5%; padding-right: 5%; padding-top: 2.9%;">
     <!-- later when we add draft feature 
         <div class="info">
@@ -11,7 +15,8 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> {{form.hidden_tag()}}
 
         <div>
-            {{ form.receiver(class="form-select",  default=PreSelect, id="theReceiver") }}
+            <option value="" disabled selected>Who are you sending?</option>
+            {{ form.receiver(class="form-select title",  default=PreSelect, id="theReceiver") }}
 
             {{form.title(class="ui-autocomplete-input title write ", autocomplete="off", id="theTitle")}}
             <!-- <button name="save" value="yes" style="float:  right;">finish later</button>  -->
@@ -24,8 +29,6 @@
 
 </div>
 <script>
-    console.log("hi:", localStorage.getItem('theReceiver{{ userId }}'))
-    theReceiver
     theReceiver.value = localStorage.getItem('theReceiver{{ userId }}');
     theReceiver.onchange  = () => {
         localStorage.setItem('theReceiver{{ userId }}', theReceiver.value)

@@ -43,6 +43,7 @@ create a .env file inside message/ and add the following variables
     account_sid=""
     auth_token=""
     messaging_service_sid=""
+    APP_SECRET=""
 ```
 
 [You need to add a Spacefile before deployment ](https://deta.space/docs/en/reference/spacefile)

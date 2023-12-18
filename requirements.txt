@@ -5,6 +5,9 @@ dnspython
 flask_login
 flask_mongoengine
 flask-bcrypt
+cryptography
+pyopenssl
+passlib
 pytz
 Flask-WTF
 gunicorn==20.0.4

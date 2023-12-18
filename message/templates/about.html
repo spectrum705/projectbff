@@ -5,22 +5,52 @@
 ;
   >   -->
 <link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}">
+<!--Link to Font Awesome CDN-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script>
 <link rel="icon" type="image/png" href="/icon.png"/>
 
 
+<!-- maybe add a media query for image sizes -->
+<style>
+    #baby-gif{
+        max-width: 64% ;
+    }
+    #bff-tile{
+        max-width: 55%
+    }
+    #doggo{
+        max-width:18%;
+    }
+        /* Media query for smaller screens (e.g., mobile devices) */
+@media (max-width: 767px) {   
+    #baby-gif{
+        max-width: 100%;
+    }
+    #bff-tile{
+        max-width: 75%;
+    }
+    #doggo{
+        max-width: 25%;
+    }
+}
+</style>
+
+
 
 <div class="readind_stuff">
+    <h1 style="margin-left:1.4em ;">About Page</h1>
 
     <div style="padding:5.7%;">
 
 
         <!-- /home/spectrum93/Desktop/message/message/templates/assets/test.png -->
         <div id="Aboutbox">
-            <!-- <img src="{{url_for('static', filename='got your back.png')}}"  style="max-width: 64% ";
-           /> -->
-           <h1>About</h1>
+           <br>
+           <img src="https://media1.tenor.com/m/lfYGrPJlQLAAAAAd/oshi-no-ko-ruby.gif" id="baby-gif" >
            
+            
+           <br>
            <br>
             <p>
                 
@@ -41,7 +71,7 @@
 
 
             <p>
-                Say goodbye to missing out on each other's lives and hello to the joy of handwritten letters. Let's keep it simple: ProjectBff is all about making sure you and your best friend stay "best friends forever." 
+                Say goodbye to missing out on each other's lives and hello to the joy of handtyped letters. Let's keep it simple: ProjectBff is all about making sure you and your best friend stay "best friends forever." 
             </p>
 
             <p>
@@ -50,9 +80,9 @@
 
             
             
-            <img src="{{url_for('static', filename='bff.png')}}"   align="center" style="max-width: 55%" ;
+            <img src="{{url_for('static', filename='bff.png')}}"   align="center" id="bff-tile"  ;
             />
-            <img src="{{url_for('static', filename='doggo.png')}}"   align="right" style="max-width: 18%" float:right ;
+            <img src="{{url_for('static', filename='doggo.png')}}"   align="right" id="doggo"  float:right ;
             />
         </div>
 
@@ -60,4 +90,8 @@
 
     </div>
 
+<!-- Made with ❤️ section -->
+<footer style="text-align: center; margin-top: 20px; padding: 10px; height: 50px; font-size: 14px;">
+    Made with <span style="color: #e25555;">❤️</span> by spectrum (<a href="https://github.com/spectrum705/projectbff" target="_blank"><i class="fab fa-github"></i> GitHub )</a>
+</footer>
     {% endblock %}

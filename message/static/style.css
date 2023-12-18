@@ -1897,6 +1897,7 @@
         line-height: 1.4em;
         font-weight: 600;
         padding: 5px 8px;
+        margin: 2px;
         transition: background-color 0.2s ease 0s;
     }
     
