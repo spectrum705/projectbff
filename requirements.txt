@@ -7,6 +7,7 @@ flask_mongoengine
 flask-bcrypt
 cryptography
 pyopenssl
+flask-ckeditor
 passlib
 pytz
 Flask-WTF

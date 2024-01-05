@@ -1,10 +1,10 @@
 {% extends "base.html" %} {% block content %}
 <!-- make add some instructions about formatting texts -->
-<style>
+<!-- <style>
     div{
         zoom: 0.9;
     }
-</style>
+</style> -->
 <div style="padding-left: 5%; padding-right: 5%; padding-top: 2.9%;">
     <!-- later when we add draft feature 
         <div class="info">
@@ -22,9 +22,10 @@
             <!-- <button name="save" value="yes" style="float:  right;">finish later</button>  -->
             {{form.submit(class = "btn btn-primary",style="float: right", onclick="localStorage.clear(); ")}}
         </div>
-        <!-- {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em;",autocomplete="off")}} -->
+        <!-- {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em;",autocomplete="off", id="theContent")}} -->
         {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em; font-size: 17px; font-family: 'Open Sans', sans-serif;",autocomplete="off", id="theContent")}}
-
+    </form>
+       
 
 
 </div>

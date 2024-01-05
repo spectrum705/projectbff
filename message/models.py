@@ -42,7 +42,7 @@ class Letters(db.Document):
     status = db.StringField(required=True) #draft/sent/seen
     timestamp = db.StringField()#default=now)
     symmetric_key = db.StringField()
-    signature = db.StringField()
+    files = db.ListField(db.ImageField()) #see if we need to add default size limit
     myid= db.StringField(db_field='id',primary_key=True, required=True,default=str(uuid.uuid4()))
 
     

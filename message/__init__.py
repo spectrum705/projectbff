@@ -5,6 +5,8 @@ import mongoengine as db
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
+# from flask_ckeditor import CKEditor
+
 
 import os
 from dotenv import load_dotenv
@@ -20,6 +22,8 @@ db.connect(host=DB_URI)
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 CSRFProtect(app)
+
+# ckeditor = CKEditor(app)
 
 # remove the limit for csrf token
 app.secret_key  = os.getenv('APP_SECRET') or os.environ["APP_SECRET"]
