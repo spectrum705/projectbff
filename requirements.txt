@@ -8,6 +8,7 @@ flask-bcrypt
 cryptography
 pyopenssl
 flask-ckeditor
+flask-fs
 passlib
 pytz
 Flask-WTF

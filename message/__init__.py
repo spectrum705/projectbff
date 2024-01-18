@@ -5,6 +5,8 @@ import mongoengine as db
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
+# import flask_fs as fs
+
 # from flask_ckeditor import CKEditor
 
 
@@ -16,18 +18,22 @@ database_name = "projectbestfriends"
 
 # DB_URI = os.environ["DB_URI"]
 DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
+UPLOAD_FOLDER = '/temp_file_storage'
 
 
 db.connect(host=DB_URI)
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 CSRFProtect(app)
+# fs.init_app(app)
 
 # ckeditor = CKEditor(app)
 
 # remove the limit for csrf token
 app.secret_key  = os.getenv('APP_SECRET') or os.environ["APP_SECRET"]
 app.config['WTF_CSRF_TIME_LIMIT'] = None
+app.config['CONTENT_TYPE'] = 'multipart/form-data'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config.update(
     SESSION_COOKIE_SECURE=True,

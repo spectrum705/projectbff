@@ -1,0 +1,177 @@
+
+
+    {% extends "base.html" %} {% block content %}
+
+   <style>
+   body {
+     background: #eee;
+   }
+   
+   .bgWhite {
+     background: white;
+     box-shadow: 0px 3px 6px 0px #cacaca;
+   }
+   
+   .title {
+     font-weight: 600;
+     margin-top: 20px;
+     font-size: 24px;
+   }
+   
+   .customBtn {
+     border-radius: 0px;
+     padding: 10px;
+   }
+   
+   .form-container {
+     padding: 30px;
+   }
+   
+   .otp-container {
+     display: flex;
+     justify-content: space-between;
+   }
+   
+   .otp-input {
+     width: 50px;
+     height: 50px;
+     text-align: center;
+     font-size: 18px;
+     font-weight: bold;
+   }
+   
+   </style>
+   
+   <div class="container">
+     <div class="row justify-content-md-center">
+       <div class="col-md-4 text-center">
+         <div class="row">
+           <div class="col-sm-12 mt-5 bgWhite form-container">
+             
+   
+             <form method="POST" class="mt-5">
+               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> {{form.hidden_tag()}}
+               
+               <div class="form-group otp-container">
+                <!-- {{form.code_firstDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_secondDigit')"
+                )}}
+
+                {{form.code_secondDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_thirdDigit')"
+                )}}
+
+                {{form.code_thirdDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_fourthDigit')"
+                )}}
+
+                {{form.code_fourthDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)"
+                )}} -->
+                {{form.code_firstDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_secondDigit', 'code_firstDigit'); backspaceShiftFocus(this, 'code_firstDigit')"
+                )}}
+                
+                {{form.code_secondDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_thirdDigit', 'code_firstDigit'); backspaceShiftFocus(this, 'code_firstDigit')"
+                )}}
+                
+                {{form.code_thirdDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="shiftFocus(this, 'code_fourthDigit', 'code_secondDigit'); backspaceShiftFocus(this, 'code_secondDigit')"
+                )}}
+                
+                {{form.code_fourthDigit(
+                  class="form-control otp-input",
+                  autocomplete="off",
+                  style="text-transform: uppercase;",
+                  oninput="alphabetValidate(this)",
+                  onkeyup="backspaceShiftFocus(this, 'code_thirdDigit')"
+                )}}
+                  
+               </div>
+               
+               <div class="form-group">
+                 {{ form.submit(class="btn btn-primary btn-block customBtn", style="margin:1.5em") }}
+               </div>
+             </form>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+
+
+   
+   <!-- <script>
+    function alphabetValidate(ele) {
+      ele.value = ele.value.toUpperCase().replace(/[^A-Z]/g, '');
+    }
+  
+    function shiftFocus(currentInput, nextInputId, prevInputId) {
+      if (currentInput.value.length === 1) {
+        document.getElementById(nextInputId).focus();
+      } else if (currentInput.value.length === 0) {
+        document.getElementById(prevInputId).focus();
+      }
+    }
+  
+    function backspaceShiftFocus(currentInput, prevInputId) {
+      if (currentInput.value.length === 0) {
+        document.getElementById(prevInputId).focus();
+        document.getElementById(prevInputId).value = ''; // Remove the content of the previous input
+      }
+    }
+  </script> -->
+  <script>
+    function alphabetValidate(ele) {
+      var newValue = ele.value.toUpperCase().replace(/[^A-Z]/g, '');
+      if (newValue !== ele.value) {
+        ele.value = newValue;
+      }
+    }
+  
+    function shiftFocus(currentInput, nextInputId, prevInputId) {
+      if (currentInput.value.length === 1) {
+        document.getElementById(nextInputId).focus();
+      } else if (currentInput.value.length === 0) {
+        document.getElementById(prevInputId).focus();
+      }
+    }
+  
+    function backspaceShiftFocus(currentInput, prevInputId) {
+      if (currentInput.value.length === 0) {
+        document.getElementById(prevInputId).focus();
+        document.getElementById(prevInputId).value = ''; // Remove the content of the previous input
+      }
+    }
+  </script>
+  
+  
+   {% endblock %}

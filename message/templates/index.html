@@ -2,11 +2,35 @@
 
 <style>
     /* Add this to your existing CSS or in a separate stylesheet */
+    .share-box {
+      border: 2px solid aliceblue;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 15px;
 
+      padding: 4px; /* Add padding to create space between text and box edges */
+    }
+
+    .share-text {
+      color: rgb(0, 0, 0);
+      font-size: smaller;
+      line-height: 1.7; /* Adjust the line height as needed */
+    }
+  
 /* Default padding for normal devices */
 section{
     zoom: 0.9;
 }
+
+    .bottom-right {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      margin: 10px;
+      font-size: smaller;
+      font-weight: 800;
+    }
+
 
 /* Media query for smaller screens (e.g., mobile devices) */
 @media (max-width: 767px) {
@@ -19,51 +43,11 @@ section{
 <section id="pricing" class="pricing">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="manifest" href="manifest.json">
+
     <div class="container" data-aos="fade-up">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="row">
-            <!-- blue box -->
-            <!-- <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-                <div class="box featured border border-dark">
-                    <h3>letters from Spec</h3>
-                    <h4><span> To mooshoo :)</span></h4>
-                    <div class="list-group">
-                        <ul>
-                            {% if bySpec %} {% for text in bySpec %}
-                            <a type="button" class="list-group-item list-group-item-action btn btn-primary" style="margin-top:0.7em;" href="{{url_for('letter', id=text.id)}}">{{text.title[0:10]}}</a> {% endfor %} {% else %}
-                            <h3>Nothing here yet o_o</h3>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <div class="btn-wrap">
-                        <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>
-                    </div>
-                </div>
-            </div> -->
-            <!--         white box
-        <div class="col-lg-4 col-md-6 mt-4 mt-lg-0 " data-aos="zoom-in" data-aos-delay="100" >
-          <div class="box border border-dark">
-            <h3>letter from mooshoo</h3>
-            <h4><span> To spectrum :)</span></h4>
-            <div class="list-group" >
-              <ul >
-            {% if byMooshoo %}  
-              {% for text in byMooshoo %}
-                  <a type="button" class="list-group-item list-group-item-action btn btn-primary" 
-                  style="margin-top:0.7em ;" href="{{url_for('letter', id=text.myid)}}">{{text.title}}</a>
-                  {% endfor %}
-                  {% else %}
-                  <h3>Nothing here yet o_o</h3>
-                  {% endif %}
-                </ul>
-                </div>
           
-            <div class="btn-wrap">
-              <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>            </div>
-          </div>
-        </div> -->
-            <!-- cool boxx mooshoo -->
-
             <div class="col-lg-5 col-md-6 mt-4 mt-md-0" id="koi1">
                 <div class="gradient-border  coolbox">
                     <h3 style="font-size: 0.6em;">{{current_user["username"]}}'s Inbox</h3>
@@ -112,9 +96,25 @@ section{
                                 </div>
                                 {% else %}
                             </div>
-                            <h3 style="color: gray;">Nothing here yet o_o</h3>
-                            {% endif %}
+                            
+                                {% if current_user["partners"]==[] %}
+                                
+                                    <div class="share-box">
+                                        <h3 class="share-text">Share your 4-letter friend-code from the bottom right of your screen with your friends so they can add you as their p</h3>
+                                    </div>
+                                    <div class="share-box">
+                                        <h3 class="share-text">You can add your friends as partners by asking their Friend-Code and entering it in Add-Friend page from the top navigation</h3>
+                                    </div>
 
+                                    <div class="share-box">
+                                        <h3 class="share-text">If you want you can have a mobile version, just open the link from any browser on your phone and click the 3-dots on top right, then select install app.</h3>
+                                    </div>
+                                {% else %}
+                                    <h3 style="color: gray;">Nothing here yet o_o</h3>
+                                {% endif %}
+
+                            {% endif %}
+                            
                         </ul>
                     </div>
                     <div class="btn-wrap">
@@ -122,8 +122,8 @@ section{
                         <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>
                     </div>
                 </div>
+              
             </div>
-
 
 
 
@@ -136,6 +136,11 @@ section{
 
     </div>
 </section>
+{% if current_user.is_authenticated %}
+<p class="bottom-right">({{ current_user["friend_code"] }})</p>
+{% endif %}
+
+
 <!-- End Pricing Section -->
 <script type="module">
     import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';

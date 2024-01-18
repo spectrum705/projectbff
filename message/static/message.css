@@ -25,11 +25,14 @@ h6 {
         width: 90%;
         margin: 0 auto;
     }
+
 }
 
 p {
     line-height: 1.8;
+    margin: 1.2em;
 }
+
 
 #box {
     border-radius: 4%;

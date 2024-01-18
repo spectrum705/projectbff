@@ -1,18 +1,26 @@
 import random
+from werkzeug.utils import secure_filename
+from message import app
 from flask import render_template, redirect, url_for, Flask, flash, session, request
-from message.forms import LoginForm, WriteForm, NewUserForm
+from message.forms import LoginForm, WriteForm, NewUserForm, AddFriendForm
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager
 from message import app, bcrypt
 from message.models import User, Letters
 from message.security import *
 import pytz     
 import uuid
+import string
 from datetime import datetime  
 from message.notify import send_sms
 from dotenv import load_dotenv
 import os
 from mongoengine import ValidationError
 from cryptography.fernet import Fernet
+from PIL import Image
+import base64
+import io
+# import BytesIO
+from message import db
 
 
 load_dotenv()
@@ -59,19 +67,55 @@ def login():
 def search_user(username):
     return User.objects(username=username).first()
 
+
+#TODO mkaing another way to add partners
+@app.route('/add_friend', methods=['GET', 'POST'])
+def add_friend():
+    form= AddFriendForm()
+
+    if form.validate_on_submit():
+        
+        # user=search_user(current_user["username"])  
+        code= form.code_firstDigit.data + form.code_secondDigit.data + form.code_thirdDigit.data+form.code_fourthDigit.data  
+        print("TYPE",type(code))
+        code=code.upper()
+        
+        print("CODE", code)
+        friend = User.objects(friend_code=code).first()
+        user = User.objects(username=current_user["username"]).first()        
+        if friend and friend not in user.partners:
+            user.partners.append(friend.username)
+            friend.partners.append(user.username)
+            user.save()
+            friend.save()
+            flash(f" Ahoy ! {friend.username} added as your Partner.","success" )
+            return redirect(url_for("home"))            
+        else:
+            flash("Invalid friend Code or User is already your friend", "danger")
+            
+        
+        
+    return render_template('new_friend_page.html', form=form)            
+
+
+
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     form = NewUserForm()
 
     # Populate partner choices from the database
-    form.partners.choices = [(user.username, user.username) for user in User.objects()]
+    
+    # form.partners.choices = [(user.username, user.username) for user in User.objects()]
 
   
     if form.validate_on_submit():
         username = form.username.data.strip()
         password = form.password.data.strip()
         mobile = form.mobile.data.strip()
+        email=  form.email.data.strip()
         uid=random.randint(1,10000)
+        my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
+        entered_friend_code = form.friend_code.data
         
         # Check if the username is already taken
         existing_user = User.objects(username=username).first()
@@ -93,7 +137,9 @@ def create():
                         username=username, 
                         password=password_hash,
                         mobile=mobile,
-                         public_key=public_key.public_bytes(
+                        email=email,
+                        friend_code=my_friend_code,                        
+                        public_key=public_key.public_bytes(
                         encoding=serialization.Encoding.PEM,
                         format=serialization.PublicFormat.SubjectPublicKeyInfo
                         ).decode('utf-8'),
@@ -101,18 +147,26 @@ def create():
 
                         )
 
-        list_of_partners  = form.partners.data
-        print("1>>>>>>>>>", form.partners.data)
+        # list_of_partners  = form.partners.data
+        # print("1>>>>>>>>>", form.partners.data)
         
 
 
-        new_user.partners=list_of_partners
+   
+        friend = User.objects(friend_code=entered_friend_code.upper()).first()
+        if friend:
+            new_user.partners.append(friend.username)
+            friend.partners.append(username)
+            friend.save()
+        else:
+            flash("Invalid friend Code ", "danger")
+            return(redirect("create"))
         new_user.save()
         #update the partner for other user too (append i think)
-        for each_selected_user in list_of_partners:
-            user=search_user(each_selected_user)
-            user.partners.append(username)
-            user.save()
+        # for each_selected_user in list_of_partners:
+        #     user=search_user(each_selected_user)
+        #     user.partners.append(username)
+        #     user.save()
             
 
         flash('Account created successfully! You can now log in.', 'success')
@@ -177,12 +231,6 @@ def home():
 #         letter.save()
 #         print("saved in draft")
 
-
-@app.route('/test',methods=["POST","GET"])
-def test():
-    form= WriteForm()
-    userId=7242
-    return render_template("write.html", form = form, userId=userId )
 
 
 # Generate a secret key for Fernet
@@ -266,12 +314,12 @@ def write():
         print("receiver:", form.receiver.data, type(form.receiver.data))
 
         symmetric_key = Fernet.generate_key()
-        print("2. symmentric key used on letter for enc:", symmetric_key)
+        # print("2. symmentric key used on letter for enc:", symmetric_key)
         title=form.title.data
         # content=form.content.data
         encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
         encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
-        print("4. encrypted symmetric key:",encrypted_symmetric_key)
+        # print("4. encrypted symmetric key:",encrypted_symmetric_key)
 
         author=current_user["username"] 
          
@@ -284,7 +332,59 @@ def write():
                         timestamp=now, 
                         myid=str(uuid.uuid4())
                         )
+        
+        
+        # if request.form and request.files:
+        #     for image_file in request.files.getlist("images"): # get the list of image files from the request
+        #         letter.images.append(image_file) # append the image file to the images list
+        #         print(">>>> got an image ")
+        # if 'images[]' in request.files:
+        # image_files = request.files.getlist('images')        # TODO getting empty images array need to fix
+        # if request.files.getlist("imageFiles"):
+        # print("!!!entered IMAGES data", image_files)
+        # print(request.form)
+        # print(request.files)
+        # image_list = request.files.get('images')
+        # print("imagelist",image_list)
+        # image_files = request.files.getlist('images[]')
+        # image_files = request.files.getlist("imageFiles")
+        # for image_file in image_files:
+        #     letter.images.append(image_file)
+        #     print(">>>> got an image ")
+        #     print(image_file.filename)
+        print("form image type",(form.images.data))
+        
 
+
+        if all((item.filename != '') for item in form.images.data):                       
+            for file in form.images.data:
+                
+                print("file type",type(file))
+                filename = secure_filename(file.filename)
+                # file.save(os.path.join(
+                #     app.config['UPLOAD_FOLDER'], 'photos', filename
+                # )) 
+                # save_file(file, file_name=filename)
+                # app_root=os.path.dirname(os.path.abspath(__file__))
+                # file.save(os.path.join(
+                # '..photos',filename))   
+                # print("image!", file)
+                # letter.images.append(file)
+                # image_data = db.ImageField().from_file(BytesIO(image_binary_data))
+                grid_fs_proxy = db.fields.GridFSProxy()
+                grid_fs_proxy.put(file)
+                letter.images.append(grid_fs_proxy)
+                letter.attachment = True
+
+            # letter.images.append(db.FileField(file, content_type = 'image/jpeg'))
+            # letter.images.put(file, content_type = 'image/jpeg')
+            print("filename", filename)
+            
+            # with open(filename, 'rb') as fd:
+            #     letter.images.put(fd, content_type = 'image/jpeg')
+
+            print(">>>> got an image ")
+            # print(file.filename)
         letter.save()
         print("LETTERRRR SAVED !!!")
         flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
@@ -308,8 +408,13 @@ def write():
         return redirect(url_for("home"))
     print('>>>>>USR ID',current_user["myid"])
     return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
+    # TODO fix try expect block
     # except:
         # return redirect(url_for("login"))
+@app.route('/test',methods=["POST","GET"])
+def test():
+    print("THIS ENDPOINT WAS HIT BY JS")
+    return True,200
 
 @app.route('/letter/<string:id>')
 @login_required
@@ -321,9 +426,20 @@ def letter(id):
     
     # print(toRead)
     #make status to read !
+    
     print(toRead.author)
     print("username:",current_user['username'])
     print(current_user["partners"])
+    # photo = toRead.images.read()
+    # print("IMAGE FIELD TYPE:",  type(photo))
+    # image_data_list = base64.b64encode(photo).decode('utf-8')
+    
+    if toRead.attachment:
+        attached_images = toRead.images 
+        image_data_list=[base64.b64encode(photo.read()).decode('utf-8') for photo in attached_images]   
+    else:
+        image_data_list=None
+
     if current_user['username'] == toRead.receiver:
         if toRead.author in current_user["partners"] and toRead.status == "sent":
             Letters.objects(myid=id).update(status="read")
@@ -338,6 +454,7 @@ def letter(id):
             password=user_key,
             backend=default_backend()
         )
+        # TODO remove all prints 
         print("5. user private key:",recipient_private_key)
         
         encrypted_symmetric_key = base64.b64decode(toRead.symmetric_key.encode())
@@ -351,10 +468,14 @@ def letter(id):
         
         para = decrypted_content.split('\n')
         para = [x for x in para if x]
+        # para = list(filter(lambda x : x != '', decrypted_content.split('\n\n')))
+
         print(toRead.status)
         PreSelect=toRead.author
         print("preselect from letter page:",PreSelect)
-        return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect)
+        # print(toRead.images.read())
+        # image=toRead.images.read()
+        return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect, img_data=image_data_list)
     else:
         return redirect(url_for("home"))
 # except:

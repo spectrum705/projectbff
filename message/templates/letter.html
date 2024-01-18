@@ -10,15 +10,21 @@
 <div id="progress-bar"></div>
 
 <div class="readind_stuff">
-
     <div id="box" style="padding:5.7%;">
+
+        {% if img_data  %}
+            {% for image in img_data %}
+                <img src="data:image/png;base64,{{ image }}" alt="Displayed Image">   
+            {% endfor %}
+        {% endif %}
+
         <div class="callout">
             <!-- <h6 style="float: right;">by {{message.author}}</h6> -->
             <h6 style="float: right;  padding-bottom:5%" class="float-sm float-end">{{message.timestamp}} <br>By {{message.author}}</h6>
 
 
         </div>
-        <h1 style="padding-bottom:5%;"><u class=line>{{message.title}} </u></h1>
+        <h1 style="padding-bottom:8%;"><u class=line>{{message.title}} </u></h1>
 
         {% for i in content%}
         <p>
@@ -39,6 +45,7 @@
 <!-- too remember the scroll positions -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+
 <script type="text/javascript">
 $(document).ready(function () {
 
@@ -53,3 +60,8 @@ $(document).ready(function () {
   });
 </script>
 {% endblock %}
+
+
+<!--  latest (was at botton) 22:07, 17-01-2024-->
+
+<!-- before that one , 22:07, 17-01-2024w -->

@@ -1,0 +1,79 @@
+#preview-area{
+
+    padding: 2%;
+  }
+  
+      /* Select all the image elements inside the preview area */
+  #preview-area img {
+    /* Add a solid black border of 2 pixels */
+    border: 2px solid black;
+    /* Add some space around the images */
+    margin: 10px;
+    /* Add some space inside the images */
+    padding: 5px;
+    /* Add a shadow effect */
+    box-shadow: 5px 5px 10px gray;
+    /* Add a transition effect for the transform property */
+    transition: transform 0.3s;
+    /* width: 70%;
+    height: 70%; */
+    width:110px;
+    height:110px;
+    object-fit: cover;
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  /* Select the image elements when hovered */
+  #preview-area img:hover {
+    /* Rotate the images by 10 degrees */
+    transform: rotate(10deg);
+  }
+  /* Use a media query to change the style for bigger screens */
+  @media (min-width: 600px) {
+    /* Select the preview area element */
+    #preview-area {
+      /* Set the display property to grid, which means the preview area will be divided into rows and columns */
+      display: grid;
+      /* Set the grid-template-columns property to repeat(4, 1fr), which means the preview area will have four columns of equal width */
+      grid-template-columns: repeat(4, 1fr);
+      /* Set the grid-gap property to 10px, which means there will be a 10px gap between the rows and columns */
+      grid-gap: 10px;
+    }
+  }
+  
+  /* Use a media query to change the style for smaller screens */
+  @media (max-width: 600px) {
+    /* Select the preview area element */
+    #preview-area {
+      /* Set the display property to grid, which means the preview area will be divided into rows and columns */
+      display: grid;
+      /* Set the grid-template-columns property to repeat(2, 1fr), which means the preview area will have two columns of equal width */
+      grid-template-columns: repeat(2, 1fr);
+      /* Set the grid-gap property to 10px, which means there will be a 10px gap between the rows and columns */
+      grid-gap: 10px;
+    }
+  }/* Add this CSS for styling the delete button */
+  /* Apply these styles to your existing delete button */
+  /* Apply these styles to your existing delete button */
+  .thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  
+  
+ #upload_lable {
+    margin-right: 20px;
+    border: none;
+    background: #08b961;
+    padding: 4px 14px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+  }
+  
+ #upload_lable:hover {
+    background: #0b9253;
+  }
+
+  

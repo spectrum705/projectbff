@@ -13,11 +13,13 @@ class User(db.Document, UserMixin):
     username = db.StringField(required=True, unique=True)
     
     partners = db.ListField(db.StringField())
-
+    #TODO create email fields for user ands store for notifications
     password = db.StringField(required=True)
     public_key = db.StringField(required=True)
     private_key = db.StringField(required=True)
     mobile = db.StringField()
+    email = db.StringField()
+    friend_code = db.StringField(required=True, unique=True)
     # _id = ObjectId()#db(required=True,unique=True, default=str(random.randint(1,10000)))
     myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))
     # print uuid.uuid4()
@@ -34,6 +36,10 @@ class User(db.Document, UserMixin):
     def __repr__(self):
         return f"User('{self.username}','{self.myid}',{self.partners})"
 
+
+# images = fs.Storage('images', fs.IMAGES,
+#                     upload_to=lambda o: 'prefix',
+#                     basename=lambda o: 'basename')
 class Letters(db.Document):
     title=  db.StringField(required=True)
     content = db.StringField(required=True)
@@ -42,7 +48,10 @@ class Letters(db.Document):
     status = db.StringField(required=True) #draft/sent/seen
     timestamp = db.StringField()#default=now)
     symmetric_key = db.StringField()
-    files = db.ListField(db.ImageField()) #see if we need to add default size limit
+    #TODO make it work for list of images
+    attachment= db.BooleanField(required=True, default=False)
+    images = db.ListField(db.FileField()) #see if we need to add default size limit
+    # images = db.FileField()
     myid= db.StringField(db_field='id',primary_key=True, required=True,default=str(uuid.uuid4()))
 
     

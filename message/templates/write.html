@@ -1,17 +1,21 @@
 {% extends "base.html" %} {% block content %}
-<!-- make add some instructions about formatting texts -->
-<!-- <style>
-    div{
-        zoom: 0.9;
-    }
-</style> -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+
+<link rel="stylesheet" href="{{ url_for('static',filename='Images_style.css') }}">
+
 <div style="padding-left: 5%; padding-right: 5%; padding-top: 2.9%;">
     <!-- later when we add draft feature 
         <div class="info">
         <p><strong>if you can't finish in one go, please click "finish later" to save it for later</strong></p>
     </div> -->
 
-    <form method="POST">
+    <form method="POST"  enctype="multipart/form-data" id="myForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> {{form.hidden_tag()}}
 
         <div>
@@ -21,15 +25,28 @@
             {{form.title(class="ui-autocomplete-input title write ", autocomplete="off", id="theTitle")}}
             <!-- <button name="save" value="yes" style="float:  right;">finish later</button>  -->
             {{form.submit(class = "btn btn-primary",style="float: right", onclick="localStorage.clear(); ")}}
-        </div>
+            
+            <label for="id_images" id="upload_lable">Add Images +</label>
+
+                {{form.images(id="id_images"  ,style="display: none")}}
+             </div>
         <!-- {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em;",autocomplete="off", id="theContent")}} -->
-        {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em; font-size: 17px; font-family: 'Open Sans', sans-serif;",autocomplete="off", id="theContent")}}
+            {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em; font-size: 17px; font-family: 'Open Sans', sans-serif;",autocomplete="off", id="theContent")}}
+
+        <div id="preview-area"></div>
+        <script type="text/javascript" src="{{ url_for('static', filename='imageUploadMechanism.js') }}"></script>
     </form>
        
 
 
 </div>
 <script>
+
+
+
+
+
+  
     theReceiver.value = localStorage.getItem('theReceiver{{ userId }}');
     theReceiver.onchange  = () => {
         localStorage.setItem('theReceiver{{ userId }}', theReceiver.value)
