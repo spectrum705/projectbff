@@ -41,34 +41,36 @@
 
 </div>
 <script>
-    // theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}');
-    theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}') || theReceiver.options[0].value;
+   // Set the default value for the receiver
+theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}') || theReceiver.options[0].value;
 
-    theReceiver.onchange = () => {
-        const selectedReceiver = theReceiver.value;
-        // localStorage.setItem('theReceiver_{{ userId }}', selectedReceiver);
-        
-        // Retrieve the content for the selected receiver from local storage
-        theContent.value = localStorage.getItem(`theContent_${{ userId }}_${selectedReceiver}`) || '';
-        theTitle.value = localStorage.getItem(`theTitle_${{ userId }}_${selectedReceiver}`) || '';
+// Function to load values based on the selected receiver
+function loadValuesForReceiver(selectedReceiver) {
+    theTitle.value = localStorage.getItem(`theTitle_${{ userId }}_${selectedReceiver}`) || '';
+    theContent.value = localStorage.getItem(`theContent_${{ userId }}_${selectedReceiver}`) || '';
+}
 
-    };
+// Load values for the default receiver
+loadValuesForReceiver(theReceiver.value);
 
-    theTitle.value = localStorage.getItem('theTitle_{{ userId }}');
-    theTitle.oninput = () => {
-        const selectedReceiver = theReceiver.value;
+theReceiver.onchange = () => {
+    const selectedReceiver = theReceiver.value;
+    localStorage.setItem('theReceiver_{{ userId }}', selectedReceiver);
+    
+    // Load values for the selected receiver
+    loadValuesForReceiver(selectedReceiver);
+};
 
-        localStorage.setItem(`theTitle_${{ userId }}_${selectedReceiver}`, theTitle.value);
-        // localStorage.setItem('theTitle_{{ userId }}', theTitle.value);
-    };
+theTitle.oninput = () => {
+    const selectedReceiver = theReceiver.value;
+    localStorage.setItem(`theTitle_${{ userId }}_${selectedReceiver}`, theTitle.value);
+};
 
-    theContent.value = localStorage.getItem('theContent_{{ userId }}');
-    theContent.oninput = () => {
-        // Store the content for the selected receiver in local storage
-        const selectedReceiver = theReceiver.value;
-        localStorage.setItem(`theContent_${{ userId }}_${selectedReceiver}`, theContent.value);
-        // localStorage.setItem('theContent_{{ userId }}', theContent.value);
-    };
+theContent.oninput = () => {
+    const selectedReceiver = theReceiver.value;
+    localStorage.setItem(`theContent_${{ userId }}_${selectedReceiver}`, theContent.value);
+};
+
 </script>
 
 {% endblock %}
