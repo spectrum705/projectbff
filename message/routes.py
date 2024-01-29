@@ -2,7 +2,7 @@ import random
 from werkzeug.utils import secure_filename
 from message import app
 from flask import render_template, redirect, url_for, Flask, flash, session, request
-from message.forms import LoginForm, WriteForm, NewUserForm, AddFriendForm
+from message.forms import LoginForm, WriteForm, NewUserForm, AddFriendForm, FeedbackForm
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager
 from message import app, bcrypt
 from message.models import User, Letters
@@ -11,7 +11,7 @@ import pytz
 import uuid
 import string
 from datetime import datetime  
-from message.notify import send_sms
+from message.notify import send_sms, send_email
 from dotenv import load_dotenv
 import os
 from mongoengine import ValidationError
@@ -49,6 +49,7 @@ def login():
 
             session["user"] = user.to_json()#form.username.data
             session.permanent = True
+            
             user_key=derive_user_key(form.password.data.strip(),user.myid)
             session["USER_KEY"] = user_key.decode("utf-8")
             print("user key",user_key)
@@ -83,7 +84,7 @@ def add_friend():
         print("CODE", code)
         friend = User.objects(friend_code=code).first()
         user = User.objects(username=current_user["username"]).first()        
-        if friend and friend not in user.partners:
+        if friend and (friend not in user.partners) and (friend!=user):
             user.partners.append(friend.username)
             friend.partners.append(user.username)
             user.save()
@@ -116,6 +117,7 @@ def create():
         uid=random.randint(1,10000)
         my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
         entered_friend_code = form.friend_code.data
+        # print("BDATA",form.birthday.data)
         
         # Check if the username is already taken
         existing_user = User.objects(username=username).first()
@@ -152,21 +154,18 @@ def create():
         
 
 
-   
-        friend = User.objects(friend_code=entered_friend_code.upper()).first()
-        if friend:
-            new_user.partners.append(friend.username)
-            friend.partners.append(username)
-            friend.save()
-        else:
-            flash("Invalid friend Code ", "danger")
-            return(redirect("create"))
+        if entered_friend_code != "":
+            friend = User.objects(friend_code=entered_friend_code.upper()).first()
+            if friend and (new_user not in friend.partners):
+            # if friend:
+                new_user.partners.append(friend.username)
+                friend.partners.append(username)
+                friend.save()
+            else:
+                flash("Invalid friend Code ", "danger")
+                return(redirect("create"))
         new_user.save()
-        #update the partner for other user too (append i think)
-        # for each_selected_user in list_of_partners:
-        #     user=search_user(each_selected_user)
-        #     user.partners.append(username)
-        #     user.save()
+    
             
 
         flash('Account created successfully! You can now log in.', 'success')
@@ -233,9 +232,10 @@ def home():
 
 
 
-# Generate a secret key for Fernet
-key = Fernet.generate_key()
-cipher_suite = Fernet(key)
+# # Generate a secret key for Fernet
+# key = Fernet.generate_key()
+# cipher_suite = Fernet(key)
+
 
 @app.route('/write',methods=["POST","GET"])
 @login_required
@@ -390,20 +390,32 @@ def write():
         flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
         print(letter.to_json())
         
+        adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
+        url="https://tinyurl.com/projectbffs"
+            
+        notification_body = f"""            
+            Hi {random.choice(adj)} {receiver.username}, Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says '{form.title.data}'. Take a look whenever you want and maybe let them know about it, here's the link {url}.
+            see ya :)
+        """
+
+        
+        # notify partner about new letter via email
+        #TODO you can remove this  IF
+        if receiver.email != "":
+            print("EMAIL:",User.objects(username=receiver.username).first().email)
+            send_email(to=User.objects(username=receiver.username).first().email,subject="YOU JUST GOT A NEW LETTER !!",content=notification_body)        
+            
         
         # notify the partner with sms
         # make a list of cute adjectives
         if receiver.mobile != "":
-            adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","princess","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "pouty","supercute", "golu-molu-like-a-potato"]
             
             # generate random word from list
-            to=User.objects(username=receiver).first().mobile 
-            url="https://tinyurl.com/projectbffs"
+            to=User.objects(username=receiver.username).first().mobile 
             print("to:",to)
             # need to change partner into specific reciver
-            body = f"Hi {random.choice(adj)} {receiver}, Hope you are smiling. {current_user['username']} just sent you a letter in ProjectBFF. The title says '{form.title.data}'. Take a read whenever you want, here's the link {url}. see ya :)"
             print('>> before sms function call')
-            send_sms(to=to, body=body)
+            send_sms(to=to, body=notification_body)
             print(">sent sms!")
         return redirect(url_for("home"))
     print('>>>>>USR ID',current_user["myid"])
@@ -411,6 +423,23 @@ def write():
     # TODO fix try expect block
     # except:
         # return redirect(url_for("login"))
+        
+@app.route("/feedback",methods=["POST","GET"])
+def feedback():
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        #user_email=form.title.data
+        title=form.subject.data
+        feedback=form.feedback.data
+        admin_id=os.getenv('admin_id') or os.environ["admin_id"]
+        
+        feedback= f"TITLE: {title}\n  " +feedback+f"  \n USER_DETAILS \n NAME:{current_user['username']}, \n  EMAIL: {current_user['email']}"
+        send_email(to=admin_id, subject="PROJECTBFF USER FEEDBACK", content=feedback)
+        flash("Your Feedback is important, Thank you :)", "info")
+        return redirect(url_for('home'))
+        
+    
+    return render_template("feedback.html",form=form) 
 @app.route('/test',methods=["POST","GET"])
 def test():
     print("THIS ENDPOINT WAS HIT BY JS")

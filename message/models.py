@@ -15,10 +15,11 @@ class User(db.Document, UserMixin):
     partners = db.ListField(db.StringField())
     #TODO create email fields for user ands store for notifications
     password = db.StringField(required=True)
+    # birthday = db.DateField(require=True)
     public_key = db.StringField(required=True)
     private_key = db.StringField(required=True)
     mobile = db.StringField()
-    email = db.StringField()
+    email = db.StringField(unique=True)
     friend_code = db.StringField(required=True, unique=True)
     # _id = ObjectId()#db(required=True,unique=True, default=str(random.randint(1,10000)))
     myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))

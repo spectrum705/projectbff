@@ -41,26 +41,34 @@
 
 </div>
 <script>
+    // theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}');
+    theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}') || theReceiver.options[0].value;
 
+    theReceiver.onchange = () => {
+        const selectedReceiver = theReceiver.value;
+        // localStorage.setItem('theReceiver_{{ userId }}', selectedReceiver);
+        
+        // Retrieve the content for the selected receiver from local storage
+        theContent.value = localStorage.getItem(`theContent_${{ userId }}_${selectedReceiver}`) || '';
+        theTitle.value = localStorage.getItem(`theTitle_${{ userId }}_${selectedReceiver}`) || '';
 
-
-
-
-  
-    theReceiver.value = localStorage.getItem('theReceiver{{ userId }}');
-    theReceiver.onchange  = () => {
-        localStorage.setItem('theReceiver{{ userId }}', theReceiver.value)
     };
 
-    theTitle.value = localStorage.getItem('theTitle{{ userId }}');
+    theTitle.value = localStorage.getItem('theTitle_{{ userId }}');
     theTitle.oninput = () => {
-        localStorage.setItem('theTitle{{ userId }}', theTitle.value)
+        const selectedReceiver = theReceiver.value;
+
+        localStorage.setItem(`theTitle_${{ userId }}_${selectedReceiver}`, theTitle.value);
+        // localStorage.setItem('theTitle_{{ userId }}', theTitle.value);
     };
 
-    theContent.value = localStorage.getItem('theContent{{ userId }}');
+    theContent.value = localStorage.getItem('theContent_{{ userId }}');
     theContent.oninput = () => {
-        localStorage.setItem('theContent{{ userId }}', theContent.value)
-    };  
+        // Store the content for the selected receiver in local storage
+        const selectedReceiver = theReceiver.value;
+        localStorage.setItem(`theContent_${{ userId }}_${selectedReceiver}`, theContent.value);
+        // localStorage.setItem('theContent_{{ userId }}', theContent.value);
+    };
 </script>
 
 {% endblock %}

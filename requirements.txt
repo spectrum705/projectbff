@@ -17,3 +17,4 @@ requests==2.24.0
 twilio
 python-dotenv
 jinja2==3.0.3
+yagmail[all]

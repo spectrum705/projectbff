@@ -60,6 +60,9 @@
                         <a class="nav-link" href="{{url_for('add_friend')}}">Add Friend</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('feedback')}}">Feedback</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
                     </li>
                     {% else %}
@@ -69,6 +72,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('create')}}">New User</a>
                     </li>
+                   
                     {% endif %}
                 </ul>
             </div>
