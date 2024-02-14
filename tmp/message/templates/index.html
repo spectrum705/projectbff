@@ -6,47 +6,7 @@
     <div class="container" data-aos="fade-up">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="row">
-            <!-- blue box -->
-            <!-- <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-                <div class="box featured border border-dark">
-                    <h3>letters from Spec</h3>
-                    <h4><span> To mooshoo :)</span></h4>
-                    <div class="list-group">
-                        <ul>
-                            {% if bySpec %} {% for text in bySpec %}
-                            <a type="button" class="list-group-item list-group-item-action btn btn-primary" style="margin-top:0.7em;" href="{{url_for('letter', id=text.id)}}">{{text.title[0:10]}}</a> {% endfor %} {% else %}
-                            <h3>Nothing here yet o_o</h3>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <div class="btn-wrap">
-                        <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>
-                    </div>
-                </div>
-            </div> -->
-            <!--         white box
-        <div class="col-lg-4 col-md-6 mt-4 mt-lg-0 " data-aos="zoom-in" data-aos-delay="100" >
-          <div class="box border border-dark">
-            <h3>letter from mooshoo</h3>
-            <h4><span> To spectrum :)</span></h4>
-            <div class="list-group" >
-              <ul >
-            {% if byMooshoo %}  
-              {% for text in byMooshoo %}
-                  <a type="button" class="list-group-item list-group-item-action btn btn-primary" 
-                  style="margin-top:0.7em ;" href="{{url_for('letter', id=text.myid)}}">{{text.title}}</a>
-                  {% endfor %}
-                  {% else %}
-                  <h3>Nothing here yet o_o</h3>
-                  {% endif %}
-                </ul>
-                </div>
           
-            <div class="btn-wrap">
-              <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>            </div>
-          </div>
-        </div> -->
-            <!-- cool boxx mooshoo -->
 
             <div class="col-lg-5 col-md-6 mt-4 mt-md-0" id="koi1">
                 <div class="gradient-border  coolbox">

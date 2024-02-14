@@ -6,47 +6,7 @@
     <div class="container" data-aos="fade-up">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <div class="row">
-            <!-- blue box -->
-            <!-- <div class="col-lg-4 col-md-6 mt-4 mt-md-0">
-                <div class="box featured border border-dark">
-                    <h3>letters from Spec</h3>
-                    <h4><span> To mooshoo :)</span></h4>
-                    <div class="list-group">
-                        <ul>
-                            {% if bySpec %} {% for text in bySpec %}
-                            <a type="button" class="list-group-item list-group-item-action btn btn-primary" style="margin-top:0.7em;" href="{{url_for('letter', id=text.id)}}">{{text.title[0:10]}}</a> {% endfor %} {% else %}
-                            <h3>Nothing here yet o_o</h3>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <div class="btn-wrap">
-                        <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>
-                    </div>
-                </div>
-            </div> -->
-            <!--         white box
-        <div class="col-lg-4 col-md-6 mt-4 mt-lg-0 " data-aos="zoom-in" data-aos-delay="100" >
-          <div class="box border border-dark">
-            <h3>letter from mooshoo</h3>
-            <h4><span> To spectrum :)</span></h4>
-            <div class="list-group" >
-              <ul >
-            {% if byMooshoo %}  
-              {% for text in byMooshoo %}
-                  <a type="button" class="list-group-item list-group-item-action btn btn-primary" 
-                  style="margin-top:0.7em ;" href="{{url_for('letter', id=text.myid)}}">{{text.title}}</a>
-                  {% endfor %}
-                  {% else %}
-                  <h3>Nothing here yet o_o</h3>
-                  {% endif %}
-                </ul>
-                </div>
-          
-            <div class="btn-wrap">
-              <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a>            </div>
-          </div>
-        </div> -->
-            <!-- cool boxx mooshoo -->
+           
 
             <div class="col-lg-5 col-md-6 mt-4 mt-md-0" id="koi1">
                 <div class="gradient-border  coolbox">
@@ -113,69 +73,7 @@
 
 
 
-            <!-- cool boxx spec -->
-            <!-- <div class="col-lg-4 col-md-6 mt-4 mt-lg-0 " id="koi2">
-
-                <div class="gradient-border  coolbox">
-                    <h3 style="font-size: 0.6em;">Spectrum's Inbox</h3>
-                    <h4><span>something to write here :)</span></h4>
-                    <div class="list-group">
-                        <ul>
-                            <div class="" style="padding:2%">
-                                <div class="row">
-                                    {% if tospec %} {% for letter in tospec %} {% if text.status == "read" %}
-                                    <div style="margin-top:0.2em ; padding-bottom: 2.4%;">
-                                        <a class="card bg-c-blue order-card" type="button" href="{{url_for('letter', id=text.id)}}">
-                                            <div class="card-block">
-
-
-                                                <i class="bi bi-envelope-open f-right" style="padding-right: 2.5%;"></i>
-                                                <span style="float: left; padding: 2%; font-weight: 700; font-size: 17px;">
-                                                         {{text.title[0:10]}}</span>
-
-                                            </div>
-
-                                        </a>
-                                    </div>
-                                    {% elif text.status == "sent" %}
-                                    <div style="margin-top:0.2em ; padding-bottom: 2.4%;">
-                                        <a class="card bg-c-yellow order-card" type="button" href="{{url_for('letter', id=text.id)}}">
-                                            <div class="card-block">
-                                                <div>
-                                                    <i class="bi bi-envelope f-right" style="padding-right: 2.5%;"></i>
-                                                    <p class="m-b-0 f-right" style="padding-right: 2.5%; font-weight: 500;"><span class="f-right">New!</span></p>
-
-                                                </div>
-
-                                                <span style="float: left; padding: 2%; font-weight: 700; font-size: 17px;">
-                                                     {{text.title[0:10]}}</span>
-                                            </div>
-                                        </a>
-
-                                    </div>
-                                    {% endif %} {% endfor %}
-                                </div>
-
-                            </div>
-                            {% else %}
-
-                            <h3 style="color: gray;">Nothing here yet o_o</h3>
-                            {% endif %}
-
-                        </ul>
-                    </div>
-
-                    <div class="btn-wrap">
-                        {% if session["user"]["username"].lower()=="spectrum" %}
-                        <a href="{{url_for('write')}}" class="btn-buy">Write a Letter</a> {% else %}
-                        <a>^_^</a> {% endif %}
-                    </div>
-
-                </div>
-            </div>
-
-
-        </div> -->
+         
         </div>
 
 

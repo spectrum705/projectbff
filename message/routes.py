@@ -1,6 +1,6 @@
 import random
 from werkzeug.utils import secure_filename
-from message import app
+from message import app, cache
 from flask import render_template, redirect, url_for, Flask, flash, session, request
 from message.forms import LoginForm, WriteForm, NewUserForm, AddFriendForm, FeedbackForm
 from flask_login import login_user, current_user, logout_user, login_required, LoginManager
@@ -16,10 +16,9 @@ from dotenv import load_dotenv
 import os
 from mongoengine import ValidationError
 from cryptography.fernet import Fernet
-from PIL import Image
 import base64
 import io
-# import BytesIO
+from message.utility import compress_image
 from message import db
 
 
@@ -68,8 +67,8 @@ def login():
 def search_user(username):
     return User.objects(username=username).first()
 
+#TODO add caching and stuff to make the whole thing faster
 
-#TODO mkaing another way to add partners
 @app.route('/add_friend', methods=['GET', 'POST'])
 def add_friend():
     form= AddFriendForm()
@@ -124,7 +123,10 @@ def create():
         if existing_user:
             flash('Username is already taken. Please choose a different one.', 'danger')
             return redirect(url_for('create'))
-
+        existing_email = User.objects(email=email).first()
+        if existing_user:
+            flash('Email is already used. Please choose a different one.', 'danger')
+            return redirect(url_for('create'))
 
         password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
         private_key, public_key = generate_key_pair()
@@ -235,7 +237,9 @@ def home():
 # # Generate a secret key for Fernet
 # key = Fernet.generate_key()
 # cipher_suite = Fernet(key)
-
+@app.route('/email/<con>')
+def email(con):
+    return render_template('email.html',content=con)
 
 @app.route('/write',methods=["POST","GET"])
 @login_required
@@ -304,6 +308,7 @@ def write():
                 recipient_public_key_str.encode(),
                 backend=default_backend()
             )
+        # TODO comment these
         # print("receiver:", form.receiver.data)
         print("1. recipient public key:", recipient_public_key)
         print("title:",  form.title.data, type(form.title.data))
@@ -334,24 +339,6 @@ def write():
                         )
         
         
-        # if request.form and request.files:
-        #     for image_file in request.files.getlist("images"): # get the list of image files from the request
-        #         letter.images.append(image_file) # append the image file to the images list
-        #         print(">>>> got an image ")
-        # if 'images[]' in request.files:
-        # image_files = request.files.getlist('images')        # TODO getting empty images array need to fix
-        # if request.files.getlist("imageFiles"):
-        # print("!!!entered IMAGES data", image_files)
-        # print(request.form)
-        # print(request.files)
-        # image_list = request.files.get('images')
-        # print("imagelist",image_list)
-        # image_files = request.files.getlist('images[]')
-        # image_files = request.files.getlist("imageFiles")
-        # for image_file in image_files:
-        #     letter.images.append(image_file)
-        #     print(">>>> got an image ")
-        #     print(image_file.filename)
         print("form image type",(form.images.data))
         
 
@@ -372,7 +359,11 @@ def write():
                 # letter.images.append(file)
                 # image_data = db.ImageField().from_file(BytesIO(image_binary_data))
                 grid_fs_proxy = db.fields.GridFSProxy()
-                grid_fs_proxy.put(file)
+                img=compress_image(file)               
+                enc_img=encrypt_file_chunked(img,symmetric_key)
+                print("ENC IMAGE",type(enc_img))
+                
+                grid_fs_proxy.put(enc_img)
                 letter.images.append(grid_fs_proxy)
                 letter.attachment = True
 
@@ -394,7 +385,8 @@ def write():
         url="https://tinyurl.com/projectbffs"
             
         notification_body = f"""            
-            Hi {random.choice(adj)} {receiver.username}, Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says '{form.title.data}'. Take a look whenever you want and maybe let them know about it, here's the link {url}.
+            Hi {random.choice(adj)} {receiver.username}, \n Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
+            have a happy day and take care.
             see ya :)
         """
 
@@ -439,17 +431,39 @@ def feedback():
         return redirect(url_for('home'))
         
     
-    return render_template("feedback.html",form=form) 
+    return render_template("feedback.html",form=form)
+
+# @app.route('/without_cached') 
+# def without_cached(): 
+#     return str(datetime.utcnow())
+
+# @app.route('/with_cached') 
+# @cache.cached(timeout=5) 
+# def with_cached(): 
+#     return str(datetime.utcnow()) 
+
 @app.route('/test',methods=["POST","GET"])
 def test():
-    print("THIS ENDPOINT WAS HIT BY JS")
-    return True,200
+    
+    adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
+    url="https://tinyurl.com/projectbffs"
+            
+    notification_body = f"""            
+        Hi {random.choice(adj)} meow,
+        Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says test. Take a look whenever you want and maybe let them know about it, \n take care.
+        see ya :)
+    """
+    return render_template("email.html", content=notification_body)
+
+
+# TODO optimize style.css 
 
 @app.route('/letter/<string:id>')
 @login_required
+@cache.cached(timeout=9000)
 def letter(id):
     # print(id)
-    #TODO uncomment try catchpyton3 
+    #TODO uncomment try catch everywhere 
     # try:
     toRead= Letters.objects(myid=id).first()
     
@@ -463,11 +477,9 @@ def letter(id):
     # print("IMAGE FIELD TYPE:",  type(photo))
     # image_data_list = base64.b64encode(photo).decode('utf-8')
     
-    if toRead.attachment:
-        attached_images = toRead.images 
-        image_data_list=[base64.b64encode(photo.read()).decode('utf-8') for photo in attached_images]   
-    else:
-        image_data_list=None
+    
+         
+   
 
     if current_user['username'] == toRead.receiver:
         if toRead.author in current_user["partners"] and toRead.status == "sent":
@@ -483,13 +495,32 @@ def letter(id):
             password=user_key,
             backend=default_backend()
         )
-        # TODO remove all prints 
+        #TODO remove all prints 
         print("5. user private key:",recipient_private_key)
         
         encrypted_symmetric_key = base64.b64decode(toRead.symmetric_key.encode())
         
         symmetric_key = decrypt_symmetric_key(encrypted_symmetric_key, recipient_private_key)
-        
+        if toRead.attachment:
+            attached_images = toRead.images 
+            
+            image_data_list=[base64.b64encode(decrypt_file_chunked(photo.read(),symmetric_key)).decode('utf-8') for photo in attached_images]  
+            
+            # this one is working
+            # image_data_list=[base64.b64encode(photo.read()).decode('utf-8') for photo in attached_images] 
+            
+            
+            # image_data_list=[]
+            # for  photo in attached_images:
+            #     print("PHOTO TYP:",type(photo))
+            #     dec_img= decrypt_file_chunked(photo.read(),symmetric_key)
+            #     print("Dec TYP:",type(dec_img))
+            #     fin_img= base64.b64encode(dec_img).decode('utf-8')
+            #     print("FIN",type(fin_img))
+            #     image_data_list.append(fin_img)
+                
+        else:
+            image_data_list=None
         print("6. decrypted symmetric key used on Letter:",symmetric_key)
         
         decrypted_content = decrypt_message_chunked(toRead.content, symmetric_key)
@@ -513,7 +544,6 @@ def letter(id):
 @app.route('/about')
 # @login_required
 def about():
-    
     return render_template("about.html")
 
 
@@ -530,3 +560,14 @@ def logout():
 @app.route('/sw.js', methods=['GET'])
 def sw():
     return app.send_static_file('sw.js')
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html'),404
+ 
+#Handling error 500 and displaying relevant web page
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html'),500
+

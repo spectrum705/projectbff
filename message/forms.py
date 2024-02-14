@@ -31,7 +31,6 @@ class WriteForm(FlaskForm):
             raise ValidationError('Please select a valid partner as the receiver.')
     title = StringField('Title..',
                 validators=[DataRequired()], render_kw={"placeholder": "Title"})
-    # TODO add info about image pasting. test rich text editor too
     content = TextAreaField( 
             validators = [DataRequired()],  render_kw={"placeholder": "write your letter here :)"})
     # content = CKEditorField('write your letter here :)',validators = [DataRequired()],  render_kw={"placeholder": "write your letter here :)"})

@@ -6,7 +6,6 @@ flask_login
 flask_mongoengine
 flask-bcrypt
 cryptography
-pyopenssl
 flask-ckeditor
 flask-fs
 passlib
@@ -18,3 +17,4 @@ twilio
 python-dotenv
 jinja2==3.0.3
 yagmail[all]
+Flask-Caching

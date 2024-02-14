@@ -1,64 +1,70 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% block content %} 
+ 
+<link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}"> 
+<script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" /> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet" /> 
 
-<link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}">
-<script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" />
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
 
-
-
-<div id="progress-bar"></div>
-
-<div class="readind_stuff">
-    <div id="box" style="padding:5.7%;">
-
-        {% if img_data  %}
-            {% for image in img_data %}
-                <img src="data:image/png;base64,{{ image }}" alt="Displayed Image">   
-            {% endfor %}
-        {% endif %}
-
-        <div class="callout">
-            <!-- <h6 style="float: right;">by {{message.author}}</h6> -->
-            <h6 style="float: right;  padding-bottom:5%" class="float-sm float-end">{{message.timestamp}} <br>By {{message.author}}</h6>
-
-
-        </div>
-        <h1 style="padding-bottom:8%;"><u class=line>{{message.title}} </u></h1>
-
-        {% for i in content%}
-        <p>
-            {{i}}
-        </p>
+<div id="progress-bar"></div> 
+ 
+<div class="readind_stuff"> 
+    <div id="box" style="padding:5.7%;"> 
+       
+        <div class="callout"> 
+            <h6 style="float: right;  padding-bottom:5%" class="float-sm float-end">{{message.timestamp}} <br>By {{message.author}}</h6> 
+        </div> 
+        <h1 style="padding-bottom:8%;"><u class="line">{{message.title}} </u></h1> 
+ 
+        {% for i in content %}
+        <p>{{i}}</p> 
         {% endfor %}
-            <form >
-                <input type="hidden" name="PreSelect" value="{{ message .author }}">
-
-                <button type="submit" class="fill" formaction="{{url_for('write')}}">Reply Now ?</button>
-            </form>
-  
-
-
+        
+        <form> 
+            <input type="hidden" name="PreSelect" value="{{ message.author }}"> 
+            <button type="submit" class="fill" formaction="{{url_for('write')}}">Reply Now ?</button> 
+        </form> 
+    </div> 
+</div> 
+    {% if img_data  %} 
+    <div class="external">
+        <div class="horizontal-scroll-wrapper">
+            {% for image in img_data %}
+            <div class="img-wrapper slower">
+                <a href="data:image/jpeg;base64,{{ image }}"  class="a" data-fancybox="gallery" >
+                    <img class="myImage"  src="data:image/jpeg;base64,{{ image }}" alt="Displayed Image">
+                </a>
+            </div>
+            {% endfor %}
+            
+        </div>
     </div>
+    {% endif %} 
+    <script type="text/javascript" src="{{ url_for('static', filename='message.js') }}"></script>
 
-</div>
-<!-- too remember the scroll positions -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ 
+<!-- to remember the scroll positions --> 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+ 
 
 
-<script type="text/javascript">
-$(document).ready(function () {
+<script type="text/javascript"> 
 
-    if (localStorage.getItem("{{message.id}}") != null) {
-        $(window).scrollTop(localStorage.getItem("{{message.id}}"));
-    }
-
-    $(window).on("scroll", function() {
-        localStorage.setItem("{{message.id}}", $(window).scrollTop());
-    });
-
-  });
-</script>
+$(document).ready(function () { 
+  
+    if (localStorage.getItem("{{message.id}}") != null) { 
+        $(window).scrollTop(localStorage.getItem("{{message.id}}")); 
+    } 
+    $(window).on("scroll", function() { 
+        localStorage.setItem("{{message.id}}", $(window).scrollTop()); 
+    }); 
+}); 
+</script> 
 {% endblock %}
-
-

@@ -5,6 +5,8 @@ import mongoengine as db
 from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
+from flask_caching import Cache
+
 # import flask_fs as fs
 
 # from flask_ckeditor import CKEditor
@@ -21,10 +23,19 @@ DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
 UPLOAD_FOLDER = '/temp_file_storage'
 
 
+
+config = {
+    "DEBUG": True,          # some Flask specific configs
+    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 1000
+}
+
 db.connect(host=DB_URI)
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 CSRFProtect(app)
+cache = Cache(app,config={'CACHE_TYPE': 'SimpleCache'})
+cache.init_app(app)
 # fs.init_app(app)
 
 # ckeditor = CKEditor(app)
