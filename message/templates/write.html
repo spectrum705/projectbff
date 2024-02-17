@@ -24,7 +24,7 @@
 
             {{form.title(class="ui-autocomplete-input title write ", autocomplete="off", id="theTitle")}}
             <!-- <button name="save" value="yes" style="float:  right;">finish later</button>  -->
-            {{form.submit(class = "btn btn-primary",style="float: right", onclick="localStorage.clear(); ")}}
+            {{form.submit(class = "btn btn-primary",style="float: right", onclick="localStorage.clear(); ", id="submit-button")}}
             
             <label for="id_images" id="upload_lable">Add Images +</label>
 
@@ -70,6 +70,25 @@ theContent.oninput = () => {
     const selectedReceiver = theReceiver.value;
     localStorage.setItem(`theContent_${{ userId }}_${selectedReceiver}`, theContent.value);
 };
+
+// Get the submit button element
+var submitButton = document.getElementById("submit-button");
+
+// Add a click event listener to the submit button
+submitButton.addEventListener("click", function () {
+    // Display the info message
+    var infoMessage = document.createElement("div");
+    infoMessage.className = "info-message";
+    infoMessage.textContent = "Your letter is being sent, please wait 🐥🐥🐥🐥";
+    document.body.insertBefore(infoMessage, document.body.firstChild);
+    
+    // Delay disabling the submit button by 100 milliseconds (adjust as needed)
+    setTimeout(function() {
+        // Disable the submit button
+        submitButton.disabled = true;
+    }, 100);
+});
+
 
 </script>
 

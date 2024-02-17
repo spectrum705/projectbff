@@ -35,147 +35,157 @@ load_dotenv()
 
 @app.route('/', methods=["POST","GET"])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("home"))
-    
-    # if "user" in session:
-    #     return redirect(url_for("home"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.objects(username=form.username.data.lower().strip()).first()
-       
-        if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip()) :
+    try:
+        if current_user.is_authenticated:
+            return redirect(url_for("home"))
+        
+        # if "user" in session:
+        #     return redirect(url_for("home"))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.objects(username=form.username.data.lower().strip()).first()
+            print("user pwd", form.password.data.strip())
+        
+            if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
 
-            session["user"] = user.to_json()#form.username.data
-            session.permanent = True
-            
-            user_key=derive_user_key(form.password.data.strip(),user.myid)
-            session["USER_KEY"] = user_key.decode("utf-8")
-            print("user key",user_key)
-            
-            
+                session["user"] = user.to_json()#form.username.data
+                session.permanent = True
+                
+                user_key=derive_user_key(form.password.data.strip(),user.myid)
+                session["USER_KEY"] = user_key.decode("utf-8")
+                # print("user key",user_key)
+                
+                
 
-            login_user(user)
-            # print("logged", current_user.username)
-            flash("you are logged in ", "success")
-            return redirect(url_for("home"))            
-        else:
-            flash("Wrong username or password, check again.", "danger") 
-    return render_template("login.html", title='Login', form = form)
-
+                login_user(user)
+                # print("logged", current_user.username)
+                flash("you are logged in ", "success")
+                return redirect(url_for("home"))            
+            else:
+                flash("Wrong username or password, check again.", "danger") 
+        return render_template("login.html", title='Login', form = form)
+    except:
+        return render_template("error.html")
 
 def search_user(username):
     return User.objects(username=username).first()
 
-#TODO add caching and stuff to make the whole thing faster
 
 @app.route('/add_friend', methods=['GET', 'POST'])
 def add_friend():
-    form= AddFriendForm()
+    try:
+        form= AddFriendForm()
 
-    if form.validate_on_submit():
-        
-        # user=search_user(current_user["username"])  
-        code= form.code_firstDigit.data + form.code_secondDigit.data + form.code_thirdDigit.data+form.code_fourthDigit.data  
-        print("TYPE",type(code))
-        code=code.upper()
-        
-        print("CODE", code)
-        friend = User.objects(friend_code=code).first()
-        user = User.objects(username=current_user["username"]).first()        
-        if friend and (friend not in user.partners) and (friend!=user):
-            user.partners.append(friend.username)
-            friend.partners.append(user.username)
-            user.save()
-            friend.save()
-            flash(f" Ahoy ! {friend.username} added as your Partner.","success" )
-            return redirect(url_for("home"))            
-        else:
-            flash("Invalid friend Code or User is already your friend", "danger")
+        if form.validate_on_submit():
             
-        
-        
-    return render_template('new_friend_page.html', form=form)            
+            # user=search_user(current_user["username"])  
+            code= form.code_firstDigit.data + form.code_secondDigit.data + form.code_thirdDigit.data+form.code_fourthDigit.data  
+            # print("TYPE",type(code))
+            code=code.upper()
+            
+            # print("CODE", code)
+            friend = User.objects(friend_code=code).first()
+            user = User.objects(username=current_user["username"]).first()        
+            if friend and (friend not in user.partners) and (friend!=user):
+                user.partners.append(friend.username)
+                friend.partners.append(user.username)
+                user.save()
+                friend.save()
+                flash(f" Ahoy ! {friend.username} added as your Partner.","success" )
+                return redirect(url_for("home"))            
+            else:
+                flash("Invalid friend Code or User is already your friend", "danger")
+                
+            
+            
+        return render_template('new_friend_page.html', form=form)            
+    except:
+        return render_template("error.html")
 
 
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
-    form = NewUserForm()
+    try:
+        form = NewUserForm()
 
-    # Populate partner choices from the database
-    
-    # form.partners.choices = [(user.username, user.username) for user in User.objects()]
-
-  
-    if form.validate_on_submit():
-        username = form.username.data.strip()
-        password = form.password.data.strip()
-        mobile = form.mobile.data.strip()
-        email=  form.email.data.strip()
-        uid=random.randint(1,10000)
-        my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
-        entered_friend_code = form.friend_code.data
-        # print("BDATA",form.birthday.data)
+        # Populate partner choices from the database
         
-        # Check if the username is already taken
-        existing_user = User.objects(username=username).first()
-        if existing_user:
-            flash('Username is already taken. Please choose a different one.', 'danger')
-            return redirect(url_for('create'))
-        existing_email = User.objects(email=email).first()
-        if existing_user:
-            flash('Email is already used. Please choose a different one.', 'danger')
-            return redirect(url_for('create'))
+        # form.partners.choices = [(user.username, user.username) for user in User.objects()]
 
-        password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
-        private_key, public_key = generate_key_pair()
-        user_key= derive_user_key(password,uid)
-        encrypted_private_key = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.BestAvailableEncryption(user_key)
-        )
-        # Create a new user
-        new_user = User(myid=uid,
-                        username=username, 
-                        password=password_hash,
-                        mobile=mobile,
-                        email=email,
-                        friend_code=my_friend_code,                        
-                        public_key=public_key.public_bytes(
-                        encoding=serialization.Encoding.PEM,
-                        format=serialization.PublicFormat.SubjectPublicKeyInfo
-                        ).decode('utf-8'),
-                        private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
-
-                        )
-
-        # list_of_partners  = form.partners.data
-        # print("1>>>>>>>>>", form.partners.data)
-        
-
-
-        if entered_friend_code != "":
-            friend = User.objects(friend_code=entered_friend_code.upper()).first()
-            if friend and (new_user not in friend.partners):
-            # if friend:
-                new_user.partners.append(friend.username)
-                friend.partners.append(username)
-                friend.save()
-            else:
-                flash("Invalid friend Code ", "danger")
-                return(redirect("create"))
-        new_user.save()
     
+        if form.validate_on_submit():
+            username = form.username.data.strip().lower()
+            password = form.password.data.strip().lower()
+            mobile = form.mobile.data.strip()
+            email=  form.email.data.strip()
+            uid=random.randint(1,10000)
+            my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
+            entered_friend_code = form.friend_code.data
+            # print("BDATA",form.birthday.data)
+            print("PWD",password)
+            
+            # Check if the username is already taken
+            existing_user = User.objects(username=username).first()
+            if existing_user:
+                flash('Username is already taken. Please choose a different one.', 'danger')
+                return redirect(url_for('create'))
+            existing_email = User.objects(email=email).first()
+            if existing_user:
+                flash('Email is already used. Please choose a different one.', 'danger')
+                return redirect(url_for('create'))
+
+            password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
+            private_key, public_key = generate_key_pair()
+            user_key= derive_user_key(password,uid)
+            encrypted_private_key = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.BestAvailableEncryption(user_key)
+            )
+            # Create a new user
+            new_user = User(myid=uid,
+                            username=username, 
+                            password=password_hash,
+                            mobile=mobile,
+                            email=email,
+                            friend_code=my_friend_code,                        
+                            public_key=public_key.public_bytes(
+                            encoding=serialization.Encoding.PEM,
+                            format=serialization.PublicFormat.SubjectPublicKeyInfo
+                            ).decode('utf-8'),
+                            private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
+
+                            )
+
+            # list_of_partners  = form.partners.data
+            # print("1>>>>>>>>>", form.partners.data)
             
 
-        flash('Account created successfully! You can now log in.', 'success')
-        return redirect(url_for('login'))
-        
-         
 
-    return render_template('create.html', form=form)
+            if entered_friend_code != "":
+                friend = User.objects(friend_code=entered_friend_code.upper()).first()
+                if friend and (new_user not in friend.partners):
+                # if friend:
+                    new_user.partners.append(friend.username)
+                    friend.partners.append(username)
+                    friend.save()
+                else:
+                    flash("Invalid friend Code ", "danger")
+                    return(redirect("create"))
+            new_user.save()
+        
+                
+
+            flash('Account created successfully! You can now log in.', 'success')
+            return redirect(url_for('login'))
+            
+            
+
+        return render_template('create.html', form=form)
+    except:
+        return render_template("error.html")
+
 
 
 
@@ -195,12 +205,16 @@ def home():
     # sortedLetters=sorted(Letters.objects(author=current_user["partners"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
     
     #  after we add reciever field in letter we need to sort letters by that instead of author
-    if "USER_KEY" not in session:   
-        return redirect(url_for("logout"))
-    sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    try:
+        if "USER_KEY" not in session:   
+            return redirect(url_for("logout"))
+        sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
 
-    # sortedLetters=None
-    return render_template("index.html", letters = sortedLetters)
+        # sortedLetters=None
+        return render_template("index.html", letters = sortedLetters)
+    except:        
+        return render_template("error.html")
+
    
     #uncomment these later
     # if "user" in session:
@@ -245,176 +259,163 @@ def email(con):
 @login_required
 def write():
     
-    # try:
-    # prevLetter =Letters.objects(author=current_user["username"], status = "draft").first()
-    
-    form = WriteForm()   
-    #making a button to get draft item if exist
-    #mention NOte for save later
-    #after sending the draft status should change too
-    #fix updateing letter object
-    #form should fill from db not local storage
-    # should work cross platform
-    #no multiple letter objects should be formed    
-    
-    #for saving to drafts
-    # if prevLetter :
-    #     print(prevLetter.author)
-    #     print(prevLetter.status)
-    #     print(prevLetter.title)
-    #     print("block 1")
-    #     form.title.data =prevLetter.title
-    #     form.content.data=prevLetter.content
+    try:
+        # prevLetter =Letters.objects(author=current_user["username"], status = "draft").first()
+        
+        form = WriteForm()   
+        #making a button to get draft item if exist
+        #mention NOte for save later
+        #after sending the draft status should change too
+        #fix updateing letter object
+        #form should fill from db not local storage
+        # should work cross platform
+        #no multiple letter objects should be formed    
+        
+        #for saving to drafts
+        # if prevLetter :
+        #     print(prevLetter.author)
+        #     print(prevLetter.status)
+        #     print(prevLetter.title)
+        #     print("block 1")
+        #     form.title.data =prevLetter.title
+        #     form.content.data=prevLetter.content
 
 
-    # if request.method == "POST":
-    #     print("block 2")
+        # if request.method == "POST":
+        #     print("block 2")
 
-    #     if request.form.get("save") == "yes":
-    #         print("hm it worked")
-    #     draftMessage(title=form.title.data, content=form.content.data)
-    #     flash("okay, it's saved you can finish later ;)" , "info")
-    #     return redirect(url_for("home"))
-
-    # list of partners
-    PreSelect = request.args.get('PreSelect')
-    form.receiver.choices = [(PreSelect, PreSelect)] + [(partner, partner) for partner in current_user['partners'] if partner != PreSelect] if PreSelect else  [(partner, partner) for partner in current_user['partners']]
-
-
-
-
-    print("choices:", form.receiver.choices)
-    print("PRESELECT in write page got it from the reply button:",PreSelect, type(PreSelect))
-
-    if form.validate_on_submit():
-        asiaTime= pytz.timezone('Asia/Kolkata')   
-        datetime_ind = datetime.now(asiaTime)  
-        now = datetime_ind.strftime("%H:%M, %d-%m-%Y")
-        print("block 3")
-
-        #fill the form if there's a letter in draft
-        # if prevLetter:
-        #     prevLetter.update(title=form.title.data, 
-        #     content=form.content.data,status="sent",timestamp=now, myid=str(uuid.uuid4()))
+        #     if request.form.get("save") == "yes":
+        #         print("hm it worked")
+        #     draftMessage(title=form.title.data, content=form.content.data)
+        #     flash("okay, it's saved you can finish later ;)" , "info")
         #     return redirect(url_for("home"))
 
-        # else:
-        if PreSelect:
-            form.receiver.data=PreSelect
-        selected_partner = form.receiver.data
-        receiver=search_user(selected_partner)
-        recipient_public_key_str = receiver.public_key#selected_partner.public_key#
-        recipient_public_key = serialization.load_pem_public_key(
-                recipient_public_key_str.encode(),
-                backend=default_backend()
-            )
-        # TODO comment these
-        # print("receiver:", form.receiver.data)
-        print("1. recipient public key:", recipient_public_key)
-        print("title:",  form.title.data, type(form.title.data))
-        print("content:", form.content.data, type(form.content.data))
-        print("author:", current_user["username"])
-        print("status:", "sent")
-        print("timestamp:", now)
-        print("receiver:", form.receiver.data, type(form.receiver.data))
+        # list of partners
+        PreSelect = request.args.get('PreSelect')
+        form.receiver.choices = [(PreSelect, PreSelect)] + [(partner, partner) for partner in current_user['partners'] if partner != PreSelect] if PreSelect else  [(partner, partner) for partner in current_user['partners']]
 
-        symmetric_key = Fernet.generate_key()
-        # print("2. symmentric key used on letter for enc:", symmetric_key)
-        title=form.title.data
-        # content=form.content.data
-        encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
-        encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
-        # print("4. encrypted symmetric key:",encrypted_symmetric_key)
 
-        author=current_user["username"] 
-         
-        letter=Letters(title=title,
-                        content=encrypted_content,
-                        symmetric_key=base64.b64encode(encrypted_symmetric_key).decode('utf-8'),
-                        author=author,
-                        receiver=receiver.username,
-                        status="sent",
-                        timestamp=now, 
-                        myid=str(uuid.uuid4())
-                        )
+
+
+        # print("choices:", form.receiver.choices)
+        # print("PRESELECT in write page got it from the reply button:",PreSelect, type(PreSelect))
+
+        if form.validate_on_submit():
+            asiaTime= pytz.timezone('Asia/Kolkata')   
+            datetime_ind = datetime.now(asiaTime)  
+            now = datetime_ind.strftime("%H:%M, %d-%m-%Y")
+            # print("block 3")
+
+            #fill the form if there's a letter in draft
+            # if prevLetter:
+            #     prevLetter.update(title=form.title.data, 
+            #     content=form.content.data,status="sent",timestamp=now, myid=str(uuid.uuid4()))
+            #     return redirect(url_for("home"))
+
+            # else:
+            if PreSelect:
+                form.receiver.data=PreSelect
+            selected_partner = form.receiver.data
+            receiver=search_user(selected_partner)
+            recipient_public_key_str = receiver.public_key#selected_partner.public_key#
+            recipient_public_key = serialization.load_pem_public_key(
+                    recipient_public_key_str.encode(),
+                    backend=default_backend()
+                )
+            # TODO comment these
+            # print("receiver:", form.receiver.data)
+            # print("1. recipient public key:", recipient_public_key)
+            # print("title:",  form.title.data, type(form.title.data))
+            # print("content:", form.content.data, type(form.content.data))
+            # print("author:", current_user["username"])
+            # print("status:", "sent")
+            # print("timestamp:", now)
+            # print("receiver:", form.receiver.data, type(form.receiver.data))
+
+            symmetric_key = Fernet.generate_key()
+            # print("2. symmentric key used on letter for enc:", symmetric_key)
+            title=form.title.data
+            # content=form.content.data
+            encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
+            encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
+            # print("4. encrypted symmetric key:",encrypted_symmetric_key)
+
+            author=current_user["username"] 
+            
+            letter=Letters(title=title,
+                            content=encrypted_content,
+                            symmetric_key=base64.b64encode(encrypted_symmetric_key).decode('utf-8'),
+                            author=author,
+                            receiver=receiver.username,
+                            status="sent",
+                            timestamp=now, 
+                            myid=str(uuid.uuid4())
+                            )
+            
         
-        
-        print("form image type",(form.images.data))
-        
 
-
-        if all((item.filename != '') for item in form.images.data):                       
-            for file in form.images.data:
+            # OG veriosn
+            if all((item.filename != '') for item in form.images.data):      
+            
+                # upload_images.delay(form.images.data)                  
+                for file in form.images.data:
+                    
+                    # print("file type",type(file))
+                    filename = secure_filename(file.filename)
                 
-                print("file type",type(file))
-                filename = secure_filename(file.filename)
-                # file.save(os.path.join(
-                #     app.config['UPLOAD_FOLDER'], 'photos', filename
-                # )) 
-                # save_file(file, file_name=filename)
-                # app_root=os.path.dirname(os.path.abspath(__file__))
-                # file.save(os.path.join(
-                # '..photos',filename))   
-                # print("image!", file)
-                # letter.images.append(file)
-                # image_data = db.ImageField().from_file(BytesIO(image_binary_data))
-                grid_fs_proxy = db.fields.GridFSProxy()
-                img=compress_image(file)               
-                enc_img=encrypt_file_chunked(img,symmetric_key)
-                print("ENC IMAGE",type(enc_img))
+                    grid_fs_proxy = db.fields.GridFSProxy()
+                    img=compress_image(file)               
+                    enc_img=encrypt_file_chunked(img,symmetric_key)
+                    # print("ENC IMAGE",type(enc_img))
+                    
+                    grid_fs_proxy.put(enc_img)
+                    letter.images.append(grid_fs_proxy)
+                    letter.attachment = True
+                # print("filename", filename)
                 
-                grid_fs_proxy.put(enc_img)
-                letter.images.append(grid_fs_proxy)
-                letter.attachment = True
+            
 
-            # letter.images.append(db.FileField(file, content_type = 'image/jpeg'))
-            # letter.images.put(file, content_type = 'image/jpeg')
-            print("filename", filename)
+                # print(">>>> got an image ")
+                # print(file.filename)
+            flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
+            letter.save()
+            # print("LETTERRRR SAVED !!!")
+            # print(letter.to_json())
             
-            # with open(filename, 'rb') as fd:
-            #     letter.images.put(fd, content_type = 'image/jpeg')
+            adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
+            url="https://tinyurl.com/projectbffs"
+                
+            notification_body = f"""            
+                Hi {random.choice(adj)} {receiver.username}, \n Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
+                have a happy day and take care.
+                see ya :)
+            """
 
-            print(">>>> got an image ")
-            # print(file.filename)
-        letter.save()
-        print("LETTERRRR SAVED !!!")
-        flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
-        print(letter.to_json())
-        
-        adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
-        url="https://tinyurl.com/projectbffs"
             
-        notification_body = f"""            
-            Hi {random.choice(adj)} {receiver.username}, \n Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
-            have a happy day and take care.
-            see ya :)
-        """
-
-        
-        # notify partner about new letter via email
-        #TODO you can remove this  IF
-        if receiver.email != "":
-            print("EMAIL:",User.objects(username=receiver.username).first().email)
-            send_email(to=User.objects(username=receiver.username).first().email,subject="YOU JUST GOT A NEW LETTER !!",content=notification_body)        
+            # notify partner about new letter via email
+            #TODO you can remove this  IF
+            if receiver.email != "":
+                # print("EMAIL:",User.objects(username=receiver.username).first().email)
+                send_email(to=User.objects(username=receiver.username).first().email,subject="YOU JUST GOT A NEW LETTER !!",content=notification_body)        
+                
             
-        
-        # notify the partner with sms
-        # make a list of cute adjectives
-        if receiver.mobile != "":
-            
-            # generate random word from list
-            to=User.objects(username=receiver.username).first().mobile 
-            print("to:",to)
-            # need to change partner into specific reciver
-            print('>> before sms function call')
-            send_sms(to=to, body=notification_body)
-            print(">sent sms!")
-        return redirect(url_for("home"))
-    print('>>>>>USR ID',current_user["myid"])
-    return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
+            # notify the partner with sms
+            # make a list of cute adjectives
+            if receiver.mobile != "":
+                
+                # generate random word from list
+                to=User.objects(username=receiver.username).first().mobile 
+                # print("to:",to)
+                # need to change partner into specific reciver
+                # print('>> before sms function call')
+                send_sms(to=to, body=notification_body)
+                # print(">sent sms!")
+            return redirect(url_for("home"))
+        # print('>>>>>USR ID',current_user["myid"])
+        return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
     # TODO fix try expect block
-    # except:
-        # return redirect(url_for("login"))
+    except:
+        return render_template("error.html")
         
 @app.route("/feedback",methods=["POST","GET"])
 def feedback():
@@ -433,113 +434,87 @@ def feedback():
     
     return render_template("feedback.html",form=form)
 
-# @app.route('/without_cached') 
-# def without_cached(): 
-#     return str(datetime.utcnow())
+# 
 
-# @app.route('/with_cached') 
-# @cache.cached(timeout=5) 
-# def with_cached(): 
-#     return str(datetime.utcnow()) 
-
-@app.route('/test',methods=["POST","GET"])
-def test():
-    
-    adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
-    url="https://tinyurl.com/projectbffs"
-            
-    notification_body = f"""            
-        Hi {random.choice(adj)} meow,
-        Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says test. Take a look whenever you want and maybe let them know about it, \n take care.
-        see ya :)
-    """
-    return render_template("email.html", content=notification_body)
-
-
-# TODO optimize style.css 
 
 @app.route('/letter/<string:id>')
 @login_required
 @cache.cached(timeout=9000)
 def letter(id):
     # print(id)
-    #TODO uncomment try catch everywhere 
-    # try:
-    toRead= Letters.objects(myid=id).first()
+    try:
+        toRead= Letters.objects(myid=id).first()
+        
+        # print(toRead)
+        #make status to read !
+        
+        # print(toRead.author)
+        # print("username:",current_user['username'])
+        # print(current_user["partners"])
+        
+        
+            
     
-    # print(toRead)
-    #make status to read !
-    
-    print(toRead.author)
-    print("username:",current_user['username'])
-    print(current_user["partners"])
-    # photo = toRead.images.read()
-    # print("IMAGE FIELD TYPE:",  type(photo))
-    # image_data_list = base64.b64encode(photo).decode('utf-8')
-    
-    
-         
-   
 
-    if current_user['username'] == toRead.receiver:
-        if toRead.author in current_user["partners"] and toRead.status == "sent":
-            Letters.objects(myid=id).update(status="read")
-        # converting string to bytes
-        user_key=session["USER_KEY"].encode('utf-8')
-        
-        encrypted_private_key = current_user.private_key.encode() # Convert the string to a byte string
+        if current_user['username'] == toRead.receiver:
+            if toRead.author in current_user["partners"] and toRead.status == "sent":
+                Letters.objects(myid=id).update(status="read")
+            # converting string to bytes
+            user_key=session["USER_KEY"].encode('utf-8')
+            
+            encrypted_private_key = current_user.private_key.encode() # Convert the string to a byte string
 
-        # Decrypt the symmetric key using the recipient's private key
-        recipient_private_key = serialization.load_pem_private_key(
-            encrypted_private_key,
-            password=user_key,
-            backend=default_backend()
-        )
-        #TODO remove all prints 
-        print("5. user private key:",recipient_private_key)
-        
-        encrypted_symmetric_key = base64.b64decode(toRead.symmetric_key.encode())
-        
-        symmetric_key = decrypt_symmetric_key(encrypted_symmetric_key, recipient_private_key)
-        if toRead.attachment:
-            attached_images = toRead.images 
+            # Decrypt the symmetric key using the recipient's private key
+            recipient_private_key = serialization.load_pem_private_key(
+                encrypted_private_key,
+                password=user_key,
+                backend=default_backend()
+            )
+            #TODO remove all prints 
+            # print("5. user private key:",recipient_private_key)
             
-            image_data_list=[base64.b64encode(decrypt_file_chunked(photo.read(),symmetric_key)).decode('utf-8') for photo in attached_images]  
+            encrypted_symmetric_key = base64.b64decode(toRead.symmetric_key.encode())
             
-            # this one is working
-            # image_data_list=[base64.b64encode(photo.read()).decode('utf-8') for photo in attached_images] 
-            
-            
-            # image_data_list=[]
-            # for  photo in attached_images:
-            #     print("PHOTO TYP:",type(photo))
-            #     dec_img= decrypt_file_chunked(photo.read(),symmetric_key)
-            #     print("Dec TYP:",type(dec_img))
-            #     fin_img= base64.b64encode(dec_img).decode('utf-8')
-            #     print("FIN",type(fin_img))
-            #     image_data_list.append(fin_img)
+            symmetric_key = decrypt_symmetric_key(encrypted_symmetric_key, recipient_private_key)
+            if toRead.attachment:
+                attached_images = toRead.images 
                 
-        else:
-            image_data_list=None
-        print("6. decrypted symmetric key used on Letter:",symmetric_key)
-        
-        decrypted_content = decrypt_message_chunked(toRead.content, symmetric_key)
-        print("7. decrypted contet:",decrypted_content)
-        
-        para = decrypted_content.split('\n')
-        para = [x for x in para if x]
-        # para = list(filter(lambda x : x != '', decrypted_content.split('\n\n')))
+                image_data_list=[base64.b64encode(decrypt_file_chunked(photo.read(),symmetric_key)).decode('utf-8') for photo in attached_images]  
+                
+                # this one is working
+                # image_data_list=[base64.b64encode(photo.read()).decode('utf-8') for photo in attached_images] 
+                
+                
+                # image_data_list=[]
+                # for  photo in attached_images:
+                #     print("PHOTO TYP:",type(photo))
+                #     dec_img= decrypt_file_chunked(photo.read(),symmetric_key)
+                #     print("Dec TYP:",type(dec_img))
+                #     fin_img= base64.b64encode(dec_img).decode('utf-8')
+                #     print("FIN",type(fin_img))
+                #     image_data_list.append(fin_img)
+                    
+            else:
+                image_data_list=None
+            # print("6. decrypted symmetric key used on Letter:",symmetric_key)
+            
+            decrypted_content = decrypt_message_chunked(toRead.content, symmetric_key)
+            # print("7. decrypted contet:",decrypted_content)
+            
+            para = decrypted_content.split('\n')
+            para = [x for x in para if x]
+            # para = list(filter(lambda x : x != '', decrypted_content.split('\n\n')))
 
-        print(toRead.status)
-        PreSelect=toRead.author
-        print("preselect from letter page:",PreSelect)
-        # print(toRead.images.read())
-        # image=toRead.images.read()
-        return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect, img_data=image_data_list)
-    else:
-        return redirect(url_for("home"))
-# except:
-    #     return redirect(url_for("login"))
+            print(toRead.status)
+            PreSelect=toRead.author
+            # print("preselect from letter page:",PreSelect)
+            # print(toRead.images.read())
+            # image=toRead.images.read()
+            return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect, img_data=image_data_list)
+        else:
+            return redirect(url_for("home"))
+    except:
+        return render_template("error.html")
 
 @app.route('/about')
 # @login_required

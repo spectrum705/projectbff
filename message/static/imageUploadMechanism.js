@@ -46,6 +46,10 @@ fileInput.addEventListener("change", function (event) {
                 // Create a new image element
                 var image = document.createElement("img");
                 image.src = event.target.result;
+                image.setAttribute("loading","lazy")
+                image.setAttribute("width","300")
+                image.setAttribute("height","300")
+
                 // Append the image to the link
                 link.appendChild(image);
                 // Append the link to the thumbnail
@@ -62,3 +66,4 @@ fileInput.addEventListener("change", function (event) {
 Fancybox.bind("[data-fancybox]", {
     // Your custom options
 });
+

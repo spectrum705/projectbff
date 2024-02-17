@@ -1,7 +1,6 @@
 from twilio.rest import Client 
 import os
 from dotenv import load_dotenv
-import yagmail
 from flask import render_template
 from email.message import EmailMessage
 import smtplib

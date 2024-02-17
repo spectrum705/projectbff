@@ -11,7 +11,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            zoom:80%
+            zoom:67%
            
         }
 
@@ -34,6 +34,7 @@
             display: block;
             margin-bottom: 8px;
             text-align: left;
+            font-weight: 700;
         }
 
         input,
@@ -133,6 +134,17 @@
      font-size: 18px;
      font-weight: bold;
    }
+
+   .password-container {
+    display: flex;
+    align-items: center;
+}
+
+#show-password-checkbox{
+    float: right;
+}
+
+
   
     </style>
 <div class="div">    <!-- Display flash messages at the top of the screen -->
@@ -151,11 +163,19 @@
           
             <li>>  panda$glow$chess$swarm</li>
         </ul>
+
         <label for="password">Password:</label>
-               
-        {{ form.password }}
+        <div class="password-container">
+            {{ form.password(id="myInput") }}
+            <input type="checkbox" id="show-password-checkbox" onclick="myFunction()">
+        </div>
+        
+
+
         <label for="confirm_password">Confirm Password:</label>
-        {{ form.confirm_password }}
+        <div class="password-container">
+            {{ form.confirm_password() }}
+        </div>
 
         <label for="mobile">Mobile Number:</label>
         {{ form.mobile }}
@@ -170,6 +190,17 @@
     
     </form>
 </div>
+
+<script>
+    function myFunction() {
+  var x = document.getElementById("myInput");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
 {% endblock %}
 
 

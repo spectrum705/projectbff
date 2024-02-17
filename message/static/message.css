@@ -18,28 +18,9 @@ h6 {
     margin: 0 auto; 
 } 
  
-@media (max-width: 768px) { 
-    /* CSS that should be displayed if width is equal to or less than 800px goes here */ 
-    .readind_stuff { 
-        padding-top: 2em; 
-        width: 90%; 
-        margin: 0 auto; 
-    } 
-    p {
-      margin: 0.3em; /* Adjust the margin as needed for smaller devices */
-  }
-  h6 { 
-    font-family: 'Poppins', sans-serif; 
-    font-size: 10px; 
-    word-spacing: 2px; 
-    color: #2C303A; 
-} 
- 
-} 
- 
 p { 
     line-height: 1.8; 
-    margin: 1.1em; 
+    margin: 1.5em; 
 } 
  
  
@@ -264,5 +245,32 @@ button {
     .slower {
       transform: none;
     }
+
+  /* Remove hover effect on mobile */
+  .img-wrapper:hover {
+    min-height: auto;
+  }
+
+  /* Remove other hover effects */
+  .a:hover .myImage {
+    filter: saturate(40%) sepia(30%) hue-rotate(5deg); 
+  }
+
+    .readind_stuff { 
+      padding-top: 2em; 
+      width: 90%; 
+      margin: 0 auto; 
+  } 
+  p {
+    margin-left: 0.3em; /* Adjust the margin as needed for smaller devices */
+    margin-right: 0.3em; /* Adjust the margin as needed for smaller devices */
+  
+  }
+  h6 { 
+    font-family: 'Poppins', sans-serif; 
+    font-size: 10px; 
+    word-spacing: 2px; 
+    color: #2C303A; 
+  } 
   }
   
