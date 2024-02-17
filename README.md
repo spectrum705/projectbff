@@ -43,11 +43,14 @@ password: test1234
 ## Local Development
 1. **Installation:**
 
-   - Clone the repository: 
-   ```bash 
-   git clone https://github.com/spectrum705/projectbff.git ```
-   - Navigate to the project directory: `cd projectbff`
-
+- Clone the repository: 
+```bash 
+git clone https://github.com/spectrum705/projectbff.git
+```
+- Navigate to the project directory: 
+```bash
+cd projectbff
+```  
 2. **Setup:**
 go to project directory
 ```bash
