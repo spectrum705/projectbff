@@ -17,4 +17,11 @@ micros:
           default: ""
         - name: messaging_service_sid
           default: ""
-          
+        - name: APP_SECRET
+          default: ""
+        - name: gmail_password
+          default: ""
+        - name: gmail_id
+          default: ""  
+        - name: admin_id
+          default: ""
