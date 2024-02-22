@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 from flask_caching import Cache
-from celery import Celery
+# from celery import Celery
 
 # import flask_fs as fs
 
