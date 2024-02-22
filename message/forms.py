@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired,Length, EqualTo, ValidationError
 from flask_wtf.file import FileField, FileAllowed
 from message import db
 from flask_mongoengine.wtf import model_form
-from flask_ckeditor import CKEditorField
+# from flask_ckeditor import CKEditorField
 
 
 
