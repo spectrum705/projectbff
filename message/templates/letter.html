@@ -2,6 +2,8 @@
 {% block content %} 
  
 <link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static',filename='stamp.css') }}"> 
+
 <script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script> 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" /> 
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet" /> 
@@ -16,15 +18,47 @@
  
 <div class="readind_stuff"> 
     <div id="box" style="padding:5.7%;"> 
-       
-        <div class="callout"> 
-            <h6 style="float: right;  padding-bottom:5%; " class="float-sm float-end">{{message.timestamp}} <br>By {{message.author}}</h6> 
-        </div> 
+    
+     <div class="stamp-title">
+    <div class="letter-title">
+
         <h1 style="padding-bottom:8%;margin-bottom: 4%;"><u class="line">{{message.title}} </u></h1> 
- 
-        {% for i in content %}
-        <p>{{i}}</p> 
-        {% endfor %}
+    </div>
+                
+        <div class="full"> 
+            <div class="canvas">     
+            <div class="stamp-outline">        
+                <div class="stamp-border">
+                    <div class="stamp-background">
+                    <div class="stamp-image-background" style="background: url({{message.stamp_url}}); background-size: contain;     background-repeat: no-repeat;
+                    "> 
+                        
+                    </div>
+                    <div class="callout timestamp">  
+                        <h6  >{{message.timestamp}} <br>By {{message.author}}</h6> 
+                    </div>     
+
+                    </div> 
+                    </div>
+
+            </div>
+
+            </div>
+        </div>
+
+
+        
+    </div>
+
+
+        
+
+        <div class="para">
+            {% for i in content %}
+            <p>{{i}}</p> 
+            {% endfor %}
+
+        </div>
         
         <form> 
             <input type="hidden" name="PreSelect" value="{{ message.author }}"> 

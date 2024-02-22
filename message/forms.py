@@ -30,7 +30,7 @@ class WriteForm(FlaskForm):
         if field.data == '':
             raise ValidationError('Please select a valid partner as the receiver.')
     title = StringField('Title..',
-                validators=[DataRequired()], render_kw={"placeholder": "Title"})
+                validators=[DataRequired(),Length(min = 3, max= 40 )], render_kw={"placeholder": "Title"})
     content = TextAreaField( 
             validators = [DataRequired()],  render_kw={"placeholder": "write your letter here :)"})
     # content = CKEditorField('write your letter here :)',validators = [DataRequired()],  render_kw={"placeholder": "write your letter here :)"})

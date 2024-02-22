@@ -1,0 +1,225 @@
+
+{% extends "base.html" %} {% block content %}
+<style>
+    *,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  zoom:97%
+}
+
+.cards {
+  display: grid;
+  grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cards_item {
+  display: flex;
+  padding: 1rem;
+  margin: 5%;
+
+}
+p{
+    line-height: 180%;
+    font-weight: 600;
+    
+}
+
+.card_image {
+  height: calc(13*1.2rem);
+  padding: 1.2rem 1.2rem 0;
+  position:relative;
+}
+.card_image:before,
+.card_image:after{
+  content: "";
+  position: absolute;
+  width: 20px;
+  left: 60%;
+  top: 0;
+  height: 45px;
+  background: #e6e6e6b8;
+  transform: rotate(45deg);
+}
+.card_image:after{
+  transform: rotate(-45deg);
+  top:auto;
+  bottom:-22px;
+  left:40%;
+}
+.card_image img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.cards_item {
+  filter:drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
+}
+
+
+.card {
+  background-color: white;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-left: 30px;
+  background-repeat: no-repeat;
+  line-height: 1.2rem;
+  -webkit-mask:radial-gradient(circle .8rem at 2px 50%,#0000 98%,#000)0 0/100% 2.4rem;
+}
+
+.card_content {
+  padding: 1.2rem;
+}
+
+h2.card_title,p {
+  margin: 1.2rem 0;
+}
+h2.card_title {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+body {
+  font-family:monospace;
+  background:#eee;
+}
+
+html {
+  font-size:15px;
+}
+
+
+h1 {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+  font-weight: 300;
+  font-size: 40px;
+  color: #080808;
+  -webkit-transition: all 0.4s ease 0s;
+  -o-transition: all 0.4s ease 0s;
+  transition: all 0.4s ease 0s;
+}
+
+h1 span {
+  display: block;
+  font-size: 0.5em;
+  line-height: 1.3;
+}
+h1 em {
+  font-style: normal;
+  font-weight: 600;
+}
+
+
+
+    
+.feature-title h1 {
+  position:relative; font-size:20px; font-weight:700;  letter-spacing:0px; text-transform:uppercase; width:150px; text-align:center; margin:auto; white-space:nowrap; border:2px solid #222;padding:5px 11px 3px 11px;
+}
+.feature-title h1:before, .feature-title h1:after {
+    background-color: #c50000;
+    position:absolute; 
+    content: '';
+    height: 7px;
+
+    width: 7px; border-radius:50%;
+    bottom: 12px;
+}
+.feature-title h1:before {
+   left:-20px;
+}
+.feature-title h1:after {
+   right:-20px;
+}
+/* ------- Helper Styles -------------*/
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+</style>
+<!-- https://codepen.io/vedadesigns/pen/GPxYZg -->
+<div class="main">
+    <div class="feature-title">
+        <h1>Features</h1>
+      </div>
+    <ul class="cards">
+    
+  <li class="cards_item">
+        <div class="card">
+          <div class="card_image"><img src="https://media1.tenor.com/m/sx4jGISLq1kAAAAd/anya-forger-tsk-tsk-tsk.gif" ></div>
+          <div class="card_content">
+            <h2 class="card_title">Secure Messaging 🔒</h2>
+            <div class="card_text">
+              <p>
+                Project BFF ensures the privacy of your messages by securely encrypting the contents. Your letters are protected, making them accessible only to the intended recipient, ensuring a confidential and closest communication experience.</p>
+             
+            </div>
+          </div>
+        </div>
+      </li>
+  <li class="cards_item">
+        <div class="card">
+          <div class="card_image"><img src="https://media1.tenor.com/m/50S-6wVYIUMAAAAC/write-totoro.gif"></div>
+          <div class="card_content">
+            <h2 class="card_title"> Draft Saving 🪄</h2>
+            <div class="card_text">
+
+              <p>Take your time to pour out your feelings into words. You can continue where you left off. Whether you're composing a heartfelt letter or savoring a thoughtful message, your progress is safely stored, giving you the flexibility to express yourself at your own pace. </p>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="cards_item">
+        <div class="card">
+          <div class="card_image"><img src="https://media1.tenor.com/m/uYaRTw7X-tEAAAAC/anime-letter.gif"></div>
+          <div class="card_content">
+            <h2 class="card_title">Reading Experience 📃</h2>
+            <div class="card_text">
+              <p>Project BFF provides a delightful reading experience for both senders and receivers. The user interface is thoughtfully designed to enhance the joy of reading and sharing letters, creating a unique and personalized experience. </p>
+            </div>
+          </div>
+        </div>
+      </li>
+  
+      <li class="cards_item">
+        <div class="card">
+          <div class="card_image"><img src="https://media1.tenor.com/m/rip-2mD4kPUAAAAC/pink-camera.gif"></div>
+          <div class="card_content">
+            <h2 class="card_title"> Image Attachment 📸</h2>
+            <div class="card_text">
+              <p>Whether it's capturing a special moment or sharing a memorable photograph, Project BFF allows you to enrich your messages with visual content. Share your experiences more vividly. Enjoy  effortless sharing of images to deepen your connections with your friends.
+          
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="cards_item">
+        <div class="card">
+          <div class="card_image"><img src="https://media1.tenor.com/m/NWb0R96ax8UAAAAC/umaru-phone.gif"></div>
+          <div class="card_content">
+            <h2 class="card_title">(PWA) for Mobile 📱</h2>
+            <div class="card_text">
+              <p>Take Project BFF with you wherever you go! Our mobile-friendly Progressive Web App ensures that you can access your letters conveniently from your mobile device. Enjoy the same great features on the go as you do on your desktop.</p>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  {% endblock %}

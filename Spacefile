@@ -25,3 +25,5 @@ micros:
           default: ""  
         - name: admin_id
           default: ""
+        - name: RAPID_API_KEY
+          default: ""

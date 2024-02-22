@@ -1,0 +1,164 @@
+/* Stamp box styling */
+.stamp-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 20px; /* Adjust top margin as needed */
+    margin-right: 20px; /* Adjust right margin as needed */
+    z-index: 1; /* Ensure stamp is above other content */
+}
+
+/* Stamp container styling */
+.stamp-container {
+    position: relative;
+}
+
+#sender,
+#time{
+  margin: 0;
+  padding: 0;
+}
+.stamp-container {
+  position: absolute;
+  top: 20px; /* Adjust top position as needed */
+  right: 20px; /* Adjust right position as needed */
+}
+
+.stamp-card {
+  width: 300px;
+  height: 420px;
+/*   margin-top: 40px;
+  margin-left: 150px; */
+  justify-self: center;
+  position: relative;
+  border-radius: 2px;
+  background-color: #ffbb94;
+  box-sizing: content-box;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+.stamp-card::after,
+.stamp-card::before {
+  content: "";
+  width: 300px;
+  height: 400px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: radial-gradient(circle, #ffffff 50%, transparent 50%),
+    radial-gradient(circle, #ffffff 50%, transparent 50%);
+  background-size: 20px 20px;
+}
+.stamp-card::before {
+  top: 10px;
+  background-repeat: repeat-y;
+  background-position: -4% 0%, 104.2% 0;
+}
+.stamp-card::after {
+  width: 280px;
+  height: 420px;
+  left: 10px;
+  background-repeat: repeat-x;
+  background-position: 0% -3%, 0% 103%;
+}
+.stamp-content {
+  width: 100%;
+  margin-top: 20px;
+  color: #083966;
+  font-size: 21px;
+  line-height: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+.stamp-content div:nth-of-type(1) h6 {
+  color: #105e77;
+}
+.stamp-content div:nth-of-type(2) {
+  color: #d3295f;
+  font-size: 75px;
+  line-height: 45px;
+}
+.bird-one {
+  width: 250px;
+  height: 290px;
+  position: relative;
+  background-color: #ee36ff;
+  overflow: hidden;
+}
+
+
+
+/* new stamp */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.stamp-title{
+  display:flex;
+  margin-bottom: 14%;
+}
+
+.full{
+    width: 100%;
+    max-width: 70%;
+  }
+  
+  .canvas {
+    position: relative;
+    padding-top: 62.5%;
+  }
+  
+  .stamp-border {
+    position: absolute;
+    width: 47%;
+    height: 82%;
+    top: -2%;
+    left: 53%;
+    background: radial-gradient(transparent 0%, transparent 50%, #fdd399  50%, #fdd399  100%);
+    background-size: 10% 10%;
+    background-position: 6% 6%;
+    padding: 2%;
+  }
+  .stamp-border .stamp-background {
+    background: #fdd399;
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+  }
+  .stamp-border .stamp-background .stamp-image-background {
+    position: relative;
+    top: 6%;
+    left: 8%;
+    width: 87%;
+    height: 79%;
+    border-radius:5%
+    
+  }
+  .timestamp{
+    display:relative;
+    top:2%;
+    left:2%;
+    z-index:50
+  }
+
+  @media (max-width: 768px) {
+    /* Adjust styles for mobile devices */
+   
+    .stamp-border {
+      position: absolute;
+      width: 72%;
+      height: 132%;
+      top: -6%;
+      left: 31%;
+
+  }
+
+  .stamp-border .stamp-background .stamp-image-background {
+   
+    width: 87%;
+    height: 75%;
+}
+}

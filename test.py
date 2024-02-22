@@ -79,5 +79,9 @@
 #     # Decrypt the message
 #     decrypted_message = decrypt_message(retrieved_message, user_key)
 #     print(f"Decrypted Message (got from DB): {decrypted_message}")
+# import requests
 
- 
+# r = requests.get("https://api.nekosapi.com/v3/images/tags")
+# r.raise_for_status()
+
+# print(r.json()["items"][0])

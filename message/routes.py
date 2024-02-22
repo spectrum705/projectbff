@@ -18,7 +18,7 @@ from mongoengine import ValidationError
 from cryptography.fernet import Fernet
 import base64
 import io
-from message.utility import compress_image
+from message.utility import compress_image, make_stamp
 from message import db
 
 
@@ -44,7 +44,7 @@ def login():
         form = LoginForm()
         if form.validate_on_submit():
             user = User.objects(username=form.username.data.lower().strip()).first()
-            print("user pwd", form.password.data.strip())
+            # print("user pwd", form.password.data.strip())
         
             if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
 
@@ -113,7 +113,7 @@ def create():
         
         # form.partners.choices = [(user.username, user.username) for user in User.objects()]
 
-    
+
         if form.validate_on_submit():
             username = form.username.data.strip().lower()
             password = form.password.data.strip().lower()
@@ -123,15 +123,16 @@ def create():
             my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
             entered_friend_code = form.friend_code.data
             # print("BDATA",form.birthday.data)
-            print("PWD",password)
+            # print("PWD",password)
             
             # Check if the username is already taken
             existing_user = User.objects(username=username).first()
+            existing_email = User.objects(username=email).first()
             if existing_user:
                 flash('Username is already taken. Please choose a different one.', 'danger')
                 return redirect(url_for('create'))
             existing_email = User.objects(email=email).first()
-            if existing_user:
+            if existing_email:
                 flash('Email is already used. Please choose a different one.', 'danger')
                 return redirect(url_for('create'))
 
@@ -207,6 +208,7 @@ def home():
     #  after we add reciever field in letter we need to sort letters by that instead of author
     try:
         if "USER_KEY" not in session:   
+            flash("Your session has expired, please Re-login","info")
             return redirect(url_for("logout"))
         sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
 
@@ -258,162 +260,170 @@ def email(con):
 @app.route('/write',methods=["POST","GET"])
 @login_required
 def write():
-    
+    #TODO
+   
     try:
-        # prevLetter =Letters.objects(author=current_user["username"], status = "draft").first()
-        
-        form = WriteForm()   
-        #making a button to get draft item if exist
-        #mention NOte for save later
-        #after sending the draft status should change too
-        #fix updateing letter object
-        #form should fill from db not local storage
-        # should work cross platform
-        #no multiple letter objects should be formed    
-        
-        #for saving to drafts
-        # if prevLetter :
-        #     print(prevLetter.author)
-        #     print(prevLetter.status)
-        #     print(prevLetter.title)
-        #     print("block 1")
-        #     form.title.data =prevLetter.title
-        #     form.content.data=prevLetter.content
-
-
-        # if request.method == "POST":
-        #     print("block 2")
-
-        #     if request.form.get("save") == "yes":
-        #         print("hm it worked")
-        #     draftMessage(title=form.title.data, content=form.content.data)
-        #     flash("okay, it's saved you can finish later ;)" , "info")
-        #     return redirect(url_for("home"))
-
-        # list of partners
-        PreSelect = request.args.get('PreSelect')
-        form.receiver.choices = [(PreSelect, PreSelect)] + [(partner, partner) for partner in current_user['partners'] if partner != PreSelect] if PreSelect else  [(partner, partner) for partner in current_user['partners']]
-
-
-
-
-        # print("choices:", form.receiver.choices)
-        # print("PRESELECT in write page got it from the reply button:",PreSelect, type(PreSelect))
-
-        if form.validate_on_submit():
-            asiaTime= pytz.timezone('Asia/Kolkata')   
-            datetime_ind = datetime.now(asiaTime)  
-            now = datetime_ind.strftime("%H:%M, %d-%m-%Y")
-            # print("block 3")
-
-            #fill the form if there's a letter in draft
-            # if prevLetter:
-            #     prevLetter.update(title=form.title.data, 
-            #     content=form.content.data,status="sent",timestamp=now, myid=str(uuid.uuid4()))
-            #     return redirect(url_for("home"))
-
-            # else:
-            if PreSelect:
-                form.receiver.data=PreSelect
-            selected_partner = form.receiver.data
-            receiver=search_user(selected_partner)
-            recipient_public_key_str = receiver.public_key#selected_partner.public_key#
-            recipient_public_key = serialization.load_pem_public_key(
-                    recipient_public_key_str.encode(),
-                    backend=default_backend()
-                )
-            # TODO comment these
-            # print("receiver:", form.receiver.data)
-            # print("1. recipient public key:", recipient_public_key)
-            # print("title:",  form.title.data, type(form.title.data))
-            # print("content:", form.content.data, type(form.content.data))
-            # print("author:", current_user["username"])
-            # print("status:", "sent")
-            # print("timestamp:", now)
-            # print("receiver:", form.receiver.data, type(form.receiver.data))
-
-            symmetric_key = Fernet.generate_key()
-            # print("2. symmentric key used on letter for enc:", symmetric_key)
-            title=form.title.data
-            # content=form.content.data
-            encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
-            encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
-            # print("4. encrypted symmetric key:",encrypted_symmetric_key)
-
-            author=current_user["username"] 
+        if current_user["partners"] != []:
+            # draftLetters =Letters.objects(author=current_user["username"], status = "draft")
             
-            letter=Letters(title=title,
-                            content=encrypted_content,
-                            symmetric_key=base64.b64encode(encrypted_symmetric_key).decode('utf-8'),
-                            author=author,
-                            receiver=receiver.username,
-                            status="sent",
-                            timestamp=now, 
-                            myid=str(uuid.uuid4())
-                            )
+            form = WriteForm()
+            #making a button to get draft item if exist
+            #mention NOte for save later
+            #after sending the draft status should change too
+            #fix updateing letter object
+            #form should fill from db not local storage
+            # should work cross platform
+            #no multiple letter objects should be formed    
             
-        
+            #for saving to drafts
+            # if draftLetters :
+            #     print(draftLetters.author)
+            #     print(draftLetters.status)
+            #     print(draftLetters.title)
+            #     print("block 1")
+            #     form.title.data =draftLetters.title
+            #     form.content.data=draftLetters.content
 
-            # OG veriosn
-            if all((item.filename != '') for item in form.images.data):      
+
+            # if request.method == "POST":
+            #     print("block 2")
+
+            #     if request.form.get("save") == "yes":
+            #         print("hm it worked")
+            #         draftMessage(title=form.title.data, content=form.content.data)
+            #         flash("okay, it's saved you can finish later :)" , "info")
+            #         return redirect(url_for("home"))
+
+            # list of partners
+            PreSelect = request.args.get('PreSelect')
+            form.receiver.choices = [(PreSelect, PreSelect)] + [(partner, partner) for partner in current_user['partners'] if partner != PreSelect] if PreSelect else  [(partner, partner) for partner in current_user['partners']]
+
+
+
+
+            # print("choices:", form.receiver.choices)
+            # print("PRESELECT in write page got it from the reply button:",PreSelect, type(PreSelect))
+
+            if form.validate_on_submit():
+                asiaTime= pytz.timezone('Asia/Kolkata')   
+                datetime_ind = datetime.now(asiaTime)  
+                now = datetime_ind.strftime("%H:%M, %d-%m-%Y")
+                # print("block 3")
+
+                #fill the form if there's a letter in draft
+                # if prevLetter:
+                #     prevLetter.update(title=form.title.data, 
+                #     content=form.content.data,status="sent",timestamp=now, myid=str(uuid.uuid4()))
+                #     return redirect(url_for("home"))
+
+                # else:
+                if PreSelect:
+                    form.receiver.data=PreSelect
+                selected_partner = form.receiver.data
+                receiver=search_user(selected_partner)
+                recipient_public_key_str = receiver.public_key#selected_partner.public_key#
+                recipient_public_key = serialization.load_pem_public_key(
+                        recipient_public_key_str.encode(),
+                        backend=default_backend()
+                    )
+                # TODO comment these
+                # print("receiver:", form.receiver.data)
+                # print("1. recipient public key:", recipient_public_key)
+                # print("title:",  form.title.data, type(form.title.data))
+                # print("content:", form.content.data, type(form.content.data))
+                # print("author:", current_user["username"])
+                # print("status:", "sent")
+                # print("timestamp:", now)
+                # print("receiver:", form.receiver.data, type(form.receiver.data))
+
+                symmetric_key = Fernet.generate_key()
+                # print("2. symmentric key used on letter for enc:", symmetric_key)
+                title=form.title.data
+                # content=form.content.data
+                encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
+                encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
+                stamp_url=make_stamp(title)
+                # print("4. encrypted symmetric key:",encrypted_symmetric_key)
+
+                author=current_user["username"] 
+                
+                
+                letter=Letters(title=title,
+                                content=encrypted_content,
+                                symmetric_key=base64.b64encode(encrypted_symmetric_key).decode('utf-8'),
+                                author=author,
+                                receiver=receiver.username,
+                                status="sent",
+                                timestamp=now, 
+                                myid=str(uuid.uuid4()),
+                                stamp_url=stamp_url
+                                )
+                
             
-                # upload_images.delay(form.images.data)                  
-                for file in form.images.data:
+
+                # OG veriosn
+                if all((item.filename != '') for item in form.images.data):      
+                
+                    # upload_images.delay(form.images.data)                  
+                    for file in form.images.data:
+                        
+                        # print("file type",type(file))
+                        filename = secure_filename(file.filename)
                     
-                    # print("file type",type(file))
-                    filename = secure_filename(file.filename)
-                
-                    grid_fs_proxy = db.fields.GridFSProxy()
-                    img=compress_image(file)               
-                    enc_img=encrypt_file_chunked(img,symmetric_key)
-                    # print("ENC IMAGE",type(enc_img))
+                        grid_fs_proxy = db.fields.GridFSProxy()
+                        img=compress_image(file)               
+                        enc_img=encrypt_file_chunked(img,symmetric_key)
+                        # print("ENC IMAGE",type(enc_img))
+                        
+                        grid_fs_proxy.put(enc_img)
+                        letter.images.append(grid_fs_proxy)
+                        letter.attachment = True
+                    # print("filename", filename)
                     
-                    grid_fs_proxy.put(enc_img)
-                    letter.images.append(grid_fs_proxy)
-                    letter.attachment = True
-                # print("filename", filename)
                 
-            
 
-                # print(">>>> got an image ")
-                # print(file.filename)
-            flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
-            letter.save()
-            # print("LETTERRRR SAVED !!!")
-            # print(letter.to_json())
-            
-            adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
-            url="https://tinyurl.com/projectbffs"
+                    # print(">>>> got an image ")
+                    # print(file.filename)
+                flash(f'Letter sent, Thank you for making {selected_partner} Happy :)',"info")
+                letter.save()
+                # print("LETTERRRR SAVED !!!")
+                # print(letter.to_json())
                 
-            notification_body = f"""            
-                Hi {random.choice(adj)} {receiver.username}, \n Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
-                have a happy day and take care.
-                see ya :)
-            """
+                adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
+                url="https://tinyurl.com/projectbffs"
+                    
+                notification_body = f"""            
+                    Hi {random.choice(adj)} {receiver.username}, \n Hope you are smiling. Your precious friend {current_user['username']} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
+                    have a happy day and take care.
+                    see ya :)
+                """
 
-            
-            # notify partner about new letter via email
-            #TODO you can remove this  IF
-            if receiver.email != "":
-                # print("EMAIL:",User.objects(username=receiver.username).first().email)
-                send_email(to=User.objects(username=receiver.username).first().email,subject="YOU JUST GOT A NEW LETTER !!",content=notification_body)        
                 
-            
-            # notify the partner with sms
-            # make a list of cute adjectives
-            if receiver.mobile != "":
+                # notify partner about new letter via email
+                if receiver.email != "":
+                    # print("EMAIL:",User.objects(username=receiver.username).first().email)
+                    send_email(to=User.objects(username=receiver.username).first().email,subject="YOU JUST GOT A NEW LETTER !!",content=notification_body)        
+                    
                 
-                # generate random word from list
-                to=User.objects(username=receiver.username).first().mobile 
-                # print("to:",to)
-                # need to change partner into specific reciver
-                # print('>> before sms function call')
-                send_sms(to=to, body=notification_body)
-                # print(">sent sms!")
-            return redirect(url_for("home"))
-        # print('>>>>>USR ID',current_user["myid"])
-        return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
-    # TODO fix try expect block
+                # notify the partner with sms
+                # make a list of cute adjectives
+                if receiver.mobile != "":
+                    
+                    # generate random word from list
+                    to=User.objects(username=receiver.username).first().mobile 
+                    # print("to:",to)
+                    # need to change partner into specific reciver
+                    # print('>> before sms function call')
+                    send_sms(to=to, body=notification_body)
+                    # print(">sent sms!")
+                return redirect(url_for("home"))
+            # print('>>>>>USR ID',current_user["myid"])
+            #for draft testing
+            # content_fill= "test content meow meow meow"
+            return render_template("write.html", form = form, userId=current_user["myid"], PreSelect=PreSelect )
+        else:
+            flash("you need to add a friend :(","danger")
+            return redirect(url_for('home'))
     except:
         return render_template("error.html")
         
@@ -435,6 +445,9 @@ def feedback():
     return render_template("feedback.html",form=form)
 
 # 
+@app.route('/test')
+def test():
+    return render_template('stamp2.html')
 
 
 @app.route('/letter/<string:id>')
@@ -446,7 +459,6 @@ def letter(id):
         toRead= Letters.objects(myid=id).first()
         
         # print(toRead)
-        #make status to read !
         
         # print(toRead.author)
         # print("username:",current_user['username'])
@@ -520,6 +532,11 @@ def letter(id):
 # @login_required
 def about():
     return render_template("about.html")
+
+@app.route('/features')
+# @login_required
+def features():
+    return render_template("features.html")
 
 
 

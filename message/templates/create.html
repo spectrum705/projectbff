@@ -142,6 +142,10 @@
 
 #show-password-checkbox{
     float: right;
+
+    
+  
+
 }
 
 
@@ -153,7 +157,7 @@
         {{ form.hidden_tag() }}
         <h2>Register</h2>
         <label for="username">Username:</label>
-        {{ form.username(autocomplete="off")}}
+        {{ form.username(autocomplete="off" , id="name")}}
         
         
         <p>pick Pass-Phrase or secure password(keep it SAFE)</p> 
@@ -180,12 +184,12 @@
         <label for="mobile">Mobile Number:</label>
         {{ form.mobile }}
         <label for="email">Enter your email:</label>
-        {{ form.email }}
+        {{ form.email(id="email") }}
         <label for="friend_code">Have your Friend's Code? (optional)</label>
 
         {{ form.friend_code(class="form-control otp-input", autocomplete="off", style="text-transform: uppercase;") }}
 
-        <input type="submit" value="Sign Up">
+        <input type="submit" value="Sign Up" id="submit-button">
        
     
     </form>
@@ -200,6 +204,38 @@
     x.type = "password";
   }
 }
+
+
+
+  
+  // Get the submit button element
+  var submitButton = document.getElementById("submit-button");
+  
+  // Add a click event listener to the submit button
+  submitButton.addEventListener("click", function () {
+
+
+    var name = document.getElementById("name").value;
+    var pwd = document.getElementById("myInput").value;
+    var email = document.getElementById("email").value;
+    if (name && pwd && email) {
+      // Display the info message
+      var infoMessage = document.createElement("div");
+      infoMessage.className = "info-message";
+      infoMessage.textContent = "Your Account is being made, please wait. 🐱🐱🐱";
+      document.body.insertBefore(infoMessage, document.body.firstChild);
+      
+      // Delay disabling the submit button by 100 milliseconds (adjust as needed)
+    
+      setTimeout(function() {
+          // Disable the submit button
+          submitButton.disabled = true;
+      }, 100);
+    }
+
+  });
+  
+  
 </script>
 {% endblock %}
 

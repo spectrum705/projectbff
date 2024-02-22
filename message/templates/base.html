@@ -8,6 +8,7 @@
 
 <head>
     <title>Project Bff</title>
+   
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -64,10 +65,15 @@
     <!-- Navbar with container-fluid for full-width container -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          
+            {% if current_user["partners"]==[] %}
+            <a class="navbar-brand" href="{{url_for('login')}}">
+                <h1 style="align-items: center; font-size: 1.7em;"> <u class="projectline">Welcome {{current_user["username"]}}🥳</u></h1>
+            </a>        
+            {% else %}
             <a class="navbar-brand" href="{{url_for('login')}}">
                 <h1 style="align-items: center; font-size: 1.7em;"> <u class="projectline">Project Best Friends Forever :)</u></h1>
             </a>
+            {% endif %}
             <!-- Toggle button for small screens -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +84,9 @@
             <!-- Navbar links -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('features')}}">Features</a>
+                    </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('add_friend')}}">Add Friend</a>
@@ -174,8 +183,8 @@ function calculateSettingAsThemeString({ localStorageTheme, systemSettingDark })
   function updateThemeOnHtmlEl({ theme }) {
     document.querySelector("html").setAttribute("data-theme", theme);
   }
-  
-  
+
+
   
     </script>
 

@@ -1,0 +1,177 @@
+/* Stamp border */
+#box div .stamp-border{
+    transform:translatex(289px) translatey(-41px);
+    margin-bottom:26px;
+    min-height:250px;
+    height:258px;
+    width:41%;
+    max-width:985px;
+    left:258px;
+    top:15px;
+   }
+   
+   /* Heading */
+   #box h1{
+    position:relative;
+    top:-200px;
+    left:-4px;
+    display:inline-block;
+    transform:translatex(27px) translatey(51px);
+   }
+   
+   /* Stamp background */
+   .canvas .stamp-background{
+    transform:translatex(0px) translatey(5px);
+    min-height:227px;
+    height:235px !important;
+    width:190px !important;
+   }
+   
+   /* Stamp image background */
+   .canvas .stamp-image-background{
+    min-height:1px;
+    height:175px !important;
+    left:0px !important;
+    transform:translatex(4px) translatey(0px);
+    width:175px !important;
+    top:-5px !important;
+   }
+   
+   /* Country */
+   .canvas .country{
+    transform:translatex(-24px) translatey(-9px);
+    display:none;
+   }
+   
+   /* Price */
+   .canvas .price{
+    transform:translatex(118px) translatey(-66px);
+    margin-bottom:84px;
+    width:88px;
+    height:0px;
+    font-size:42px !important;
+    color:#00154c !important;
+    font-weight:300;
+    display:none;
+   }
+   
+   /* Heading */
+   #box .callout h6{
+    transform:translatex(-5px) translatey(82px);
+    min-height:42px;
+    height:42px;
+    padding-bottom:18px !important;
+    position:relative;
+    top:-98px;
+    left:2px;
+   }
+   
+   /* Para */
+   #box .para{
+    position:relative;
+    top:-101px;
+   }
+   
+   /* Callout */
+   #box .callout{
+    transform:translatex(-42px) translatey(-4px);
+   }
+   
+   /* Line */
+   #box h1 .line{
+    display:inline-block;
+    transform:translatex(8px) translatey(-61px);
+    width:100%;
+   }
+   
+   /* Canvas */
+   #box div .canvas{
+    height:199px;
+    padding-top:199px;
+   }
+   
+   #progress-bar{
+    z-index:187;
+   }
+   
+   @media (max-width:768px){
+   
+    /* Line */
+    #box h1 .line{
+     display:inline-block;
+     transform:translatex(-21px) translatey(-34px);
+     margin-right:85px;
+     width:304px;
+    }
+    
+    /* Stamp background */
+    .canvas .stamp-background{
+     transform:translatex(-337px) translatey(48px);
+     position:relative;
+     left:335px;
+     top:-40px;
+     min-height:200px;
+     height:216px !important;
+    }
+    
+    /* Stamp border */
+    #box div .stamp-border{
+     transform:translatex(273px) translatey(-60px);
+     height:241px;
+     padding-right:12px;
+     min-height:215px;
+     width:219px;
+     left:71px;
+     top:22px;
+     min-width:163px;
+    }
+    
+    /* Stamp image background */
+    .canvas .stamp-image-background{
+     margin-bottom:10px;
+     top:14px !important;
+     transform:translatex(7px) translatey(-23px);
+     left:-5px !important;
+    }
+    
+    /* Canvas */
+    #box div .canvas{
+     top:16px;
+    }
+    
+    /* Heading */
+    #box .callout h6{
+     top:38px;
+     left:64px;
+     transform:translatex(-47px) translatey(-60px);
+     margin-right:36px;
+     margin-left:0px;
+     width:102px;
+     padding-top:6px;
+    }
+    
+    /* Box */
+    #box{
+     transform:translatex(-8px) translatey(-35px);
+    }
+    
+    /* Navbar toggler */
+    .navbar .navbar-toggler{
+     transform:translatex(-27px) translatey(-42px);
+    }
+    
+   }
+   
+   @media (min-width:769px){
+   
+    /* Price */
+    .canvas .price{
+     margin-left:189px;
+    }
+    
+    /* Heading */
+    #box .callout h6{
+     font-size:12px;
+    }
+    
+   }

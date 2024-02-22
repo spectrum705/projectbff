@@ -20,11 +20,8 @@ class User(db.Document, UserMixin):
     mobile = db.StringField()
     email = db.StringField(unique=True)
     friend_code = db.StringField(required=True, unique=True)
-    # _id = ObjectId()#db(required=True,unique=True, default=str(random.randint(1,10000)))
     myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))
-    # print uuid.uuid4()
-    # myid= db.StringField(db_field='id',unique=True,required=True,default=str(uuid.uuid4()))
-    # _id=db.IntField(db_field='id', required=True,default=(random.randint(1,10000)))
+  
 
     def to_json(self):
         return {
@@ -50,12 +47,11 @@ class Letters(db.Document):
     symmetric_key = db.StringField()
     attachment= db.BooleanField(required=True, default=False)
     images = db.ListField(db.FileField()) #see if we need to add default size limit
-    # images = db.FileField()
+    stamp_url = db.StringField()
     myid= db.StringField(db_field='id',primary_key=True, required=True,default=str(uuid.uuid4()))
 
     
-    # generating random id for each letter
-    # _id = db.IntField()
+   
 
 
     def to_json(self):

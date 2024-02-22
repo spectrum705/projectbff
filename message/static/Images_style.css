@@ -76,23 +76,3 @@
     background: #0b9253;
   }
 
-  .info-message {
-    background-color: #bad6ff;
-    color: #2b2a2a;
-    padding: 10px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    border-radius: 5px; /* Rounded corners */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Drop shadow */
-    text-align: center; /* Center the text */
-    font-weight: 500;
-}
-
-@media only screen and (max-width: 768px) {
-    /* Adjust styles for mobile devices */
-    .info-message {
-        font-size: 14px; /* Decrease font size for smaller screens */
-        padding: 8px; /* Adjust padding */
-        margin-bottom: 8px; /* Adjust margin */
-    }
-}

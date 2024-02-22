@@ -1,5 +1,14 @@
 from PIL import Image
 from io import BytesIO
+import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+
+
+
 
 def compress_image(file, max_width=1024, max_height=1024):
     """
@@ -45,3 +54,34 @@ def compress_image(file, max_width=1024, max_height=1024):
     compressed_image_data = compressed_image.getvalue()
 
     return compressed_image_data
+
+
+
+
+
+# Using AI GEN
+def make_stamp(title):
+    url = "https://animimagine-ai.p.rapidapi.com/generateImage"
+    RAPID_API_KEY = os.getenv('RAPID_API_KEY') or os.environ["RAPID_API_KEY"]
+
+
+    payload = {
+        "selected_model_id": "anything-v5",
+        "selected_model_bsize": "512",
+        "prompt": title
+    }
+    headers = {
+        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "X-RapidAPI-Key": RAPID_API_KEY,
+        "X-RapidAPI-Host": "animimagine-ai.p.rapidapi.com"
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        stamp_url=response.json()["imageUrl"]
+    # print(response.json())
+    except:
+        stamp_url="https://i.pinimg.com/originals/83/cd/ef/83cdef4f9b31d3aa9da285d1219a4d7b.jpg"
+
+    return stamp_url

@@ -1,3 +1,14 @@
+/* Stamp styles */
+
+
+
+/* Add other styles as needed */
+
+
+.letter-title{
+  width: 70%;
+}
+
 body { 
     font-family: 'Poppins', sans-serif; 
     font-size: 18px; 
@@ -6,15 +17,17 @@ body {
  
 h6 { 
     font-family: 'Poppins', sans-serif; 
-    font-size: 14px; 
+    font-size: 10px; 
     word-spacing: 2px; 
     color: #2C303A; 
+    font-weight:600;
+    padding:8%;
+
 } 
  
 .readind_stuff { 
     padding-top: 2em; 
-    width: 65%; 
-    /* width: 77%; */ 
+    width: 62%; 
     margin: 0 auto; 
 } 
  
@@ -22,7 +35,8 @@ p {
     line-height: 1.8; 
     margin: 1.5em; 
 } 
- 
+
+
  
 #box { 
     border-radius: 4%; 
@@ -45,6 +59,7 @@ p {
     height: 15px; 
     position: fixed; 
     top: 0; 
+    z-index: 200;
 } 
  
 .line { 
@@ -199,7 +214,7 @@ button {
   .myImage { 
     max-width: 45vh; 
     max-height: 50vh; 
-    transition: .5s; 
+    transition: .2s; 
     vertical-align: top; 
     filter: saturate(40%) sepia(30%) hue-rotate(5deg); 
   } 
@@ -268,9 +283,11 @@ button {
   }
   h6 { 
     font-family: 'Poppins', sans-serif; 
-    font-size: 10px; 
+    font-size: 8px; 
     word-spacing: 2px; 
     color: #2C303A; 
+    font-weight:700;
+    padding:10%;
   } 
   }
   
