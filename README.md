@@ -102,7 +102,7 @@ create a .env file inside message/ and add the following variables
 ![Letter Page](/letter.png)
 ### Gallery view
 ![gallery Page](/gallery.png)
-### Letter Ecncryption
+### Ecncryption Steps
 ![Encryption steps](/enc.png)
 
 

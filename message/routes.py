@@ -197,13 +197,7 @@ def create():
 @login_required
 def home():
     
-    # if "user" not in session:
-    #     return redirect(url_for("login"))
-    # current_user = session["user"]
-    
-    # eariler the letters were retrieved by author field
-    # sortedLetters=sorted(Letters.objects(author=current_user["partners"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
-    
+   
     #  after we add reciever field in letter we need to sort letters by that instead of author
     # try:
     if "USER_KEY" not in session:   
@@ -553,12 +547,12 @@ def sw():
     return app.send_static_file('sw.js')
 
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('error.html'),404
+# @app.errorhandler(404)
+# def not_found_error(error):
+#     return render_template('error.html'),404
  
-#Handling error 500 and displaying relevant web page
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('error.html'),500
+# #Handling error 500 and displaying relevant web page
+# @app.errorhandler(500)
+# def internal_error(error):
+#     return render_template('error.html'),500
 
