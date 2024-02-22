@@ -21,7 +21,6 @@ import io
 from message.utility import compress_image, make_stamp
 from message import db
 
-
 load_dotenv()
 
 
@@ -106,86 +105,86 @@ def add_friend():
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
-    try:
-        form = NewUserForm()
+    # try:
+    form = NewUserForm()
 
-        # Populate partner choices from the database
+    # Populate partner choices from the database
+    
+    # form.partners.choices = [(user.username, user.username) for user in User.objects()]
+
+
+    if form.validate_on_submit():
+        username = form.username.data.strip().lower()
+        password = form.password.data.strip().lower()
+        mobile = form.mobile.data.strip()
+        email=  form.email.data.strip()
+        uid=random.randint(1,10000)
+        my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
+        entered_friend_code = form.friend_code.data
+        # print("BDATA",form.birthday.data)
+        # print("PWD",password)
         
-        # form.partners.choices = [(user.username, user.username) for user in User.objects()]
+        # Check if the username is already taken
+        existing_user = User.objects(username=username).first()
+        existing_email = User.objects(username=email).first()
+        if existing_user:
+            flash('Username is already taken. Please choose a different one.', 'danger')
+            return redirect(url_for('create'))
+        existing_email = User.objects(email=email).first()
+        if existing_email:
+            flash('Email is already used. Please choose a different one.', 'danger')
+            return redirect(url_for('create'))
 
+        password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
+        private_key, public_key = generate_key_pair()
+        user_key= derive_user_key(password,uid)
+        encrypted_private_key = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.BestAvailableEncryption(user_key)
+        )
+        # Create a new user
+        new_user = User(myid=uid,
+                        username=username, 
+                        password=password_hash,
+                        mobile=mobile,
+                        email=email,
+                        friend_code=my_friend_code,                        
+                        public_key=public_key.public_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PublicFormat.SubjectPublicKeyInfo
+                        ).decode('utf-8'),
+                        private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
 
-        if form.validate_on_submit():
-            username = form.username.data.strip().lower()
-            password = form.password.data.strip().lower()
-            mobile = form.mobile.data.strip()
-            email=  form.email.data.strip()
-            uid=random.randint(1,10000)
-            my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
-            entered_friend_code = form.friend_code.data
-            # print("BDATA",form.birthday.data)
-            # print("PWD",password)
-            
-            # Check if the username is already taken
-            existing_user = User.objects(username=username).first()
-            existing_email = User.objects(username=email).first()
-            if existing_user:
-                flash('Username is already taken. Please choose a different one.', 'danger')
-                return redirect(url_for('create'))
-            existing_email = User.objects(email=email).first()
-            if existing_email:
-                flash('Email is already used. Please choose a different one.', 'danger')
-                return redirect(url_for('create'))
+                        )
 
-            password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
-            private_key, public_key = generate_key_pair()
-            user_key= derive_user_key(password,uid)
-            encrypted_private_key = private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.BestAvailableEncryption(user_key)
-            )
-            # Create a new user
-            new_user = User(myid=uid,
-                            username=username, 
-                            password=password_hash,
-                            mobile=mobile,
-                            email=email,
-                            friend_code=my_friend_code,                        
-                            public_key=public_key.public_bytes(
-                            encoding=serialization.Encoding.PEM,
-                            format=serialization.PublicFormat.SubjectPublicKeyInfo
-                            ).decode('utf-8'),
-                            private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
-
-                            )
-
-            # list_of_partners  = form.partners.data
-            # print("1>>>>>>>>>", form.partners.data)
-            
-
-
-            if entered_friend_code != "":
-                friend = User.objects(friend_code=entered_friend_code.upper()).first()
-                if friend and (new_user not in friend.partners):
-                # if friend:
-                    new_user.partners.append(friend.username)
-                    friend.partners.append(username)
-                    friend.save()
-                else:
-                    flash("Invalid friend Code ", "danger")
-                    return(redirect("create"))
-            new_user.save()
+        # list_of_partners  = form.partners.data
+        # print("1>>>>>>>>>", form.partners.data)
         
-                
 
-            flash('Account created successfully! You can now log in.', 'success')
-            return redirect(url_for('login'))
-            
+
+        if entered_friend_code != "":
+            friend = User.objects(friend_code=entered_friend_code.upper()).first()
+            if friend and (new_user not in friend.partners):
+            # if friend:
+                new_user.partners.append(friend.username)
+                friend.partners.append(username)
+                friend.save()
+            else:
+                flash("Invalid friend Code ", "danger")
+                return(redirect("create"))
+        new_user.save()
+    
             
 
-        return render_template('create.html', form=form)
-    except:
-        return render_template("error.html")
+        flash('Account created successfully! You can now log in.', 'success')
+        return redirect(url_for('login'))
+        
+        
+
+    return render_template('create.html', form=form)
+    # except:
+    #     return render_template("error.html")
 
 
 
