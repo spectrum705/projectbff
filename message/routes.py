@@ -34,37 +34,37 @@ load_dotenv()
 
 @app.route('/', methods=["POST","GET"])
 def login():
-    try:
-        if current_user.is_authenticated:
-            return redirect(url_for("home"))
-        
-        # if "user" in session:
-        #     return redirect(url_for("home"))
-        form = LoginForm()
-        if form.validate_on_submit():
-            user = User.objects(username=form.username.data.lower().strip()).first()
-            # print("user pwd", form.password.data.strip())
-        
-            if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
+    # try:
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+    
+    # if "user" in session:
+    #     return redirect(url_for("home"))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.objects(username=form.username.data.lower().strip()).first()
+        # print("user pwd", form.password.data.strip())
+    
+        if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
 
-                session["user"] = user.to_json()#form.username.data
-                session.permanent = True
-                
-                user_key=derive_user_key(form.password.data.strip(),user.myid)
-                session["USER_KEY"] = user_key.decode("utf-8")
-                # print("user key",user_key)
-                
-                
+            session["user"] = user.to_json()#form.username.data
+            session.permanent = True
+            
+            user_key=derive_user_key(form.password.data.strip(),user.myid)
+            session["USER_KEY"] = user_key.decode("utf-8")
+            # print("user key",user_key)
+            
+            
 
-                login_user(user)
-                # print("logged", current_user.username)
-                flash("you are logged in ", "success")
-                return redirect(url_for("home"))            
-            else:
-                flash("Wrong username or password, check again.", "danger") 
-        return render_template("login.html", title='Login', form = form)
-    except:
-        return render_template("error.html")
+            login_user(user)
+            # print("logged", current_user.username)
+            flash("you are logged in ", "success")
+            return redirect(url_for("home"))            
+        else:
+            flash("Wrong username or password, check again.", "danger") 
+    return render_template("login.html", title='Login', form = form)
+    # except:
+    #     return render_template("error.html")
 
 def search_user(username):
     return User.objects(username=username).first()
@@ -205,16 +205,16 @@ def home():
     # sortedLetters=sorted(Letters.objects(author=current_user["partners"] ), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
     
     #  after we add reciever field in letter we need to sort letters by that instead of author
-    try:
-        if "USER_KEY" not in session:   
-            flash("Your session has expired, please Re-login","info")
-            return redirect(url_for("logout"))
-        sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    # try:
+    if "USER_KEY" not in session:   
+        flash("Your session has expired, please Re-login","info")
+        return redirect(url_for("logout"))
+    sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
 
-        # sortedLetters=None
-        return render_template("index.html", letters = sortedLetters)
-    except:        
-        return render_template("error.html")
+    # sortedLetters=None
+    return render_template("index.html", letters = sortedLetters)
+    # except:        
+    #     return render_template("error.html")
 
    
     #uncomment these later
