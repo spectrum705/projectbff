@@ -34,37 +34,37 @@ load_dotenv()
 
 @app.route('/', methods=["POST","GET"])
 def login():
-    # try:
-    if current_user.is_authenticated:
-        return redirect(url_for("home"))
-    
-    # if "user" in session:
-    #     return redirect(url_for("home"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.objects(username=form.username.data.lower().strip()).first()
-        # print("user pwd", form.password.data.strip())
-    
-        if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
+    try:
+        if current_user.is_authenticated:
+            return redirect(url_for("home"))
+        
+        # if "user" in session:
+        #     return redirect(url_for("home"))
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.objects(username=form.username.data.lower().strip()).first()
+            # print("user pwd", form.password.data.strip())
+        
+            if user is not None and bcrypt.check_password_hash(user.password, form.password.data.strip().lower()) :
 
-            session["user"] = user.to_json()#form.username.data
-            session.permanent = True
-            
-            user_key=derive_user_key(form.password.data.strip(),user.myid)
-            session["USER_KEY"] = user_key.decode("utf-8")
-            # print("user key",user_key)
-            
-            
+                session["user"] = user.to_json()#form.username.data
+                session.permanent = True
+                
+                user_key=derive_user_key(form.password.data.strip(),user.myid)
+                session["USER_KEY"] = user_key.decode("utf-8")
+                # print("user key",user_key)
+                
+                
 
-            login_user(user)
-            # print("logged", current_user.username)
-            flash("you are logged in ", "success")
-            return redirect(url_for("home"))            
-        else:
-            flash("Wrong username or password, check again.", "danger") 
-    return render_template("login.html", title='Login', form = form)
-    # except:
-    #     return render_template("error.html")
+                login_user(user)
+                # print("logged", current_user.username)
+                flash("you are logged in ", "success")
+                return redirect(url_for("home"))            
+            else:
+                flash("Wrong username or password, check again.", "danger") 
+        return render_template("login.html", title='Login', form = form)
+    except:
+        return render_template("error.html")
 
 def search_user(username):
     return User.objects(username=username).first()
@@ -105,86 +105,86 @@ def add_friend():
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
-    # try:
-    form = NewUserForm()
+    try:
+        form = NewUserForm()
 
-    # Populate partner choices from the database
-    
-    # form.partners.choices = [(user.username, user.username) for user in User.objects()]
-
-
-    if form.validate_on_submit():
-        username = form.username.data.strip().lower()
-        password = form.password.data.strip().lower()
-        mobile = form.mobile.data.strip()
-        email=  form.email.data.strip()
-        uid=random.randint(1,10000)
-        my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
-        entered_friend_code = form.friend_code.data
-        # print("BDATA",form.birthday.data)
-        # print("PWD",password)
+        # Populate partner choices from the database
         
-        # Check if the username is already taken
-        existing_user = User.objects(username=username).first()
-        existing_email = User.objects(username=email).first()
-        if existing_user:
-            flash('Username is already taken. Please choose a different one.', 'danger')
-            return redirect(url_for('create'))
-        existing_email = User.objects(email=email).first()
-        if existing_email:
-            flash('Email is already used. Please choose a different one.', 'danger')
-            return redirect(url_for('create'))
-
-        password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
-        private_key, public_key = generate_key_pair()
-        user_key= derive_user_key(password,uid)
-        encrypted_private_key = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.BestAvailableEncryption(user_key)
-        )
-        # Create a new user
-        new_user = User(myid=uid,
-                        username=username, 
-                        password=password_hash,
-                        mobile=mobile,
-                        email=email,
-                        friend_code=my_friend_code,                        
-                        public_key=public_key.public_bytes(
-                        encoding=serialization.Encoding.PEM,
-                        format=serialization.PublicFormat.SubjectPublicKeyInfo
-                        ).decode('utf-8'),
-                        private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
-
-                        )
-
-        # list_of_partners  = form.partners.data
-        # print("1>>>>>>>>>", form.partners.data)
-        
+        # form.partners.choices = [(user.username, user.username) for user in User.objects()]
 
 
-        if entered_friend_code != "":
-            friend = User.objects(friend_code=entered_friend_code.upper()).first()
-            if friend and (new_user not in friend.partners):
-            # if friend:
-                new_user.partners.append(friend.username)
-                friend.partners.append(username)
-                friend.save()
-            else:
-                flash("Invalid friend Code ", "danger")
-                return(redirect("create"))
-        new_user.save()
-    
+        if form.validate_on_submit():
+            username = form.username.data.strip().lower()
+            password = form.password.data.strip().lower()
+            mobile = form.mobile.data.strip()
+            email=  form.email.data.strip()
+            uid=random.randint(1,10000)
+            my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
+            entered_friend_code = form.friend_code.data
+            # print("BDATA",form.birthday.data)
+            # print("PWD",password)
+            
+            # Check if the username is already taken
+            existing_user = User.objects(username=username).first()
+            existing_email = User.objects(username=email).first()
+            if existing_user:
+                flash('Username is already taken. Please choose a different one.', 'danger')
+                return redirect(url_for('create'))
+            existing_email = User.objects(email=email).first()
+            if existing_email:
+                flash('Email is already used. Please choose a different one.', 'danger')
+                return redirect(url_for('create'))
+
+            password_hash=bcrypt.generate_password_hash(password,10).decode('utf-8') 
+            private_key, public_key = generate_key_pair()
+            user_key= derive_user_key(password,uid)
+            encrypted_private_key = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.BestAvailableEncryption(user_key)
+            )
+            # Create a new user
+            new_user = User(myid=uid,
+                            username=username, 
+                            password=password_hash,
+                            mobile=mobile,
+                            email=email,
+                            friend_code=my_friend_code,                        
+                            public_key=public_key.public_bytes(
+                            encoding=serialization.Encoding.PEM,
+                            format=serialization.PublicFormat.SubjectPublicKeyInfo
+                            ).decode('utf-8'),
+                            private_key=encrypted_private_key.decode('utf-8') # Save the encrypted private key as a string
+
+                            )
+
+            # list_of_partners  = form.partners.data
+            # print("1>>>>>>>>>", form.partners.data)
             
 
-        flash('Account created successfully! You can now log in.', 'success')
-        return redirect(url_for('login'))
-        
-        
 
-    return render_template('create.html', form=form)
-    # except:
-    #     return render_template("error.html")
+            if entered_friend_code != "":
+                friend = User.objects(friend_code=entered_friend_code.upper()).first()
+                if friend and (new_user not in friend.partners):
+                # if friend:
+                    new_user.partners.append(friend.username)
+                    friend.partners.append(username)
+                    friend.save()
+                else:
+                    flash("Invalid friend Code ", "danger")
+                    return(redirect("create"))
+            new_user.save()
+        
+                
+
+            flash('Account created successfully! You can now log in.', 'success')
+            return redirect(url_for('login'))
+            
+            
+
+        return render_template('create.html', form=form)
+    except:
+        return render_template("error.html")
 
 
 
@@ -199,16 +199,16 @@ def home():
     
    
     #  after we add reciever field in letter we need to sort letters by that instead of author
-    # try:
-    if "USER_KEY" not in session:   
-        flash("Your session has expired, please Re-login","info")
-        return redirect(url_for("logout"))
-    sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
+    try:
+        if "USER_KEY" not in session:   
+            flash("Your session has expired, please Re-login","info")
+            return redirect(url_for("logout"))
+        sortedLetters=sorted(Letters.objects(receiver=current_user["username"]), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
 
-    # sortedLetters=None
-    return render_template("index.html", letters = sortedLetters)
-    # except:        
-    #     return render_template("error.html")
+        # sortedLetters=None
+        return render_template("index.html", letters = sortedLetters)
+    except:        
+        return render_template("error.html")
 
    
     #uncomment these later
@@ -547,12 +547,12 @@ def sw():
     return app.send_static_file('sw.js')
 
 
-# @app.errorhandler(404)
-# def not_found_error(error):
-#     return render_template('error.html'),404
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html'),404
  
-# #Handling error 500 and displaying relevant web page
-# @app.errorhandler(500)
-# def internal_error(error):
-#     return render_template('error.html'),500
+#Handling error 500 and displaying relevant web page
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('error.html'),500
 
