@@ -182,9 +182,9 @@
         </div>
 
         <label for="mobile">Mobile Number:</label>
-        {{ form.mobile }}
+        {{ form.mobile(autocomplete="off" ) }}
         <label for="email">Enter your email:</label>
-        {{ form.email(id="email") }}
+        {{ form.email(id="email", autocomplete="off" ) }}
         <label for="friend_code">Have your Friend's Code? (optional)</label>
 
         {{ form.friend_code(class="form-control otp-input", autocomplete="off", style="text-transform: uppercase;") }}
