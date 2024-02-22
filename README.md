@@ -88,9 +88,9 @@ create a .env file inside message/ and add the following variables
 ```
 
 ## External APIs Used
-### Twillio - for SMS 
-### MongoBD - for database
-###  AnimImagine AI API - for stamp generation [Link](https://rapidapi.com/serhaterfidan/api/animimagine-ai)
+##### Twillio - for SMS 
+##### MongoBD - for database
+##### AnimImagine AI API - for stamp generation [Link](https://rapidapi.com/serhaterfidan/api/animimagine-ai)
 
 
 ## Screenshots
