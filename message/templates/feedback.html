@@ -231,6 +231,9 @@ textarea {
  
 }
     </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/vaakash/socializer@f4c4e9/css/socializer.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.2/css/all.css">
+    <div class="sr-sharebar sr-sb-vl sr-sb-left"><div class="socializer" data-features="32px,circle,opacity,vertical,icon-white,pad" data-meta-link="https://discord.com/users/558700192992591883" data-meta-title="contact me" data-sites="discord" data-meta-discord="https://discord.com/users/558700192992591883" data-meta-github="https://github.com/spectrum705/projectbff"></div></div>
 <div id=""mainbox">
     <h1 id="heading">&bull; Share your feedback, suggestions, views, anything at all &bull;</h1>
     <div class="underline">
@@ -264,15 +267,19 @@ textarea {
     </form><!-- // End form -->
   </div><!-- // End #container -->
 </div>
+<script src="https://cdn.jsdelivr.net/gh/vaakash/socializer@f4c4e9/js/socializer.min.js"></script>
 
 <script>
-  
+  (function(){
+    socializer( '.socializer' );
+}());
 // Get the submit button element
 var submitButton = document.getElementById("submit-button");
 
 // Add a click event listener to the submit button
 submitButton.addEventListener("click", function () {
     // Display the info message
+  
 
     var title = document.getElementById("subject_input").value;
     var content = document.getElementById("message_input").value;

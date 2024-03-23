@@ -1,0 +1,170 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<style>
+  main{    overflow: hidden; /* Prevent overflow */
+}
+  .wrapper {
+    display: flex;
+    height: 110vh; /* Adjust the height as needed */
+    flex-direction: column; /* Arrange screens vertically */
+
+  }
+  .screen {
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+  }
+  #screen1 {
+    height: 33vh; /* Set a fixed height for Screen 1 */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+    flex: 1; /* Screen 1 takes up 1/3 of the height */
+    margin: 1%;
+  }
+  #screen2 {
+    flex: 3;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+
+<link rel="stylesheet" href="{{ url_for('static',filename='Images_style.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static',filename='stamp.css') }}"> 
+
+<script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" /> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@200&display=swap" rel="stylesheet" /> 
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+
+
+
+
+<div class="wrapper">
+  <div id="screen1" class="screen">
+
+            <div class="readind_stuff"> 
+              <div id="box" style="padding:5.7%;">       
+                <h1 ><u class="line">{{message.title}} (By {{message.author}}) </u></h1> 
+              
+                  <div class="para">
+                      {% for i in content %}
+                      <p>{{i}}</p> 
+                      {% endfor %}
+          
+                  </div> 
+              </div> 
+          </div> 
+          </div>
+  <div id="screen2" class="screen">
+          <div class="write-container" >
+            <form method="POST"  enctype="multipart/form-data" id="myForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" /> {{form.hidden_tag()}}
+                <div>
+                    <option value="" disabled selected>Who are you sending?</option>
+                    {{ form.receiver(class="form-select title",  default=PreSelect, id="theReceiver") }}
+
+                    {{form.title(class="ui-autocomplete-input title write ", autocomplete="off", id="theTitle")}}
+                    <!-- <button name="save" value="yes" style="float:  right;">finish later</button>  -->
+                    {{form.submit(class = "btn btn-primary",style="float: right", onclick="localStorage.clear(); ", id="submit-button")}}
+                    
+                    <label for="id_images" id="upload_lable">Add Images +</label>
+
+                        {{form.images(id="id_images"  ,style="display: none", accept=".jpg, .jpeg, .png, .gif")}}
+                    </div>
+                <!-- {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em;",autocomplete="off", id="theContent")}} -->
+              
+                  
+                    {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em; font-size: 17px; font-family: 'Open Sans', sans-serif;",autocomplete="off", id="theContent")}}
+
+                <div id="preview-area"></div>
+                <script type="text/javascript" src="{{ url_for('static', filename='imageUploadMechanism.js') }}"></script>
+            </form>
+              
+
+
+          </div>
+                              <script>
+                              // Set the default value for the receiver
+                              theReceiver.value = localStorage.getItem('theReceiver_{{ userId }}') || theReceiver.options[0].value;
+
+                              // Function to load values based on the selected receiver
+                              function loadValuesForReceiver(selectedReceiver) {
+
+                                
+                                theTitle.value = localStorage.getItem(`theTitle_${{ userId }}_${selectedReceiver}`)|| '';
+                                theContent.value = localStorage.getItem(`theContent_${{ userId }}_${selectedReceiver}`)|| '';
+                                
+                                // this if for implementing draft feature later
+                                // theTitle.value = localStorage.getItem(`theTitle_${{ userId }}_${selectedReceiver}`) || `{{draft_title}}_${selectedReceiver}`;
+                                // theContent.value = localStorage.getItem(`theContent_${{ userId }}_${selectedReceiver}`)|| `{{draft_content}}_${selectedReceiver}`
+                              }
+
+                              // Load values for the default receiver
+                              loadValuesForReceiver(theReceiver.value);
+
+                              theReceiver.onchange = () => {
+                                const selectedReceiver = theReceiver.value;
+                                localStorage.setItem('theReceiver_{{ userId }}', selectedReceiver);
+                                
+                                // Load values for the selected receiver
+                                loadValuesForReceiver(selectedReceiver);
+                              };
+
+                              theTitle.oninput = () => {
+                                const selectedReceiver = theReceiver.value;
+                                localStorage.setItem(`theTitle_${{ userId }}_${selectedReceiver}`, theTitle.value);
+                              };
+
+                              theContent.oninput = () => {
+                                const selectedReceiver = theReceiver.value;
+                                localStorage.setItem(`theContent_${{ userId }}_${selectedReceiver}`, theContent.value);
+                              };
+
+                              // Get the submit button element
+                              var submitButton = document.getElementById("submit-button");
+
+                              // Add a click event listener to the submit button
+                              submitButton.addEventListener("click", function () {
+                                // Display the info message
+                                var receiver = document.getElementById("theReceiver").value;
+                                var title = document.getElementById("theTitle").value;
+                                var content = document.getElementById("theContent").value;
+                                if (receiver && title && content) {
+
+                                var infoMessage = document.createElement("div");
+                                infoMessage.className = "info-message";
+                                infoMessage.textContent = "Your letter is being sent, please wait 🐥🐥🐥🐥";
+                                document.body.insertBefore(infoMessage, document.body.firstChild);
+                                
+                                // Delay disabling the submit button by 100 milliseconds (adjust as needed)
+                                setTimeout(function() {
+                                    // Disable the submit button
+                                    submitButton.disabled = true;
+                                }, 100);
+                                }
+                              });
+                            </script>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

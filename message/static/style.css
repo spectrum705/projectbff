@@ -3,6 +3,7 @@ html {
     scroll-behavior: smooth;
 }
 
+
 #header {
     transition: all 0.5s;
     background: #fff;
@@ -25,6 +26,9 @@ html {
         white-space: nowrap;
         transition: 0.3s;
         font-weight: 600;
+    }
+    .nav-item{
+        padding-left: 1.2em;
     }
 
 

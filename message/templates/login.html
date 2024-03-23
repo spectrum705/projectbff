@@ -1,39 +1,86 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% block content %}
 
 <div class="container row justify-content-center login-box">
     <h1>Login</h1>
-    <form method="POST" action="" class="">
-        <div class="">
-            {{form.hidden_tag()}}
-            <div class="">
-                {{form.username.label}} {% if form.username.errors %} {{form.username(class="is-invalid")}}
-                <div class="invalid-feedback">
-                    {% for error in form.username.errors %}
-                    <span class="is-invalid">
-                            {{error}}
-                          </span> {% endfor %}
+    <form method="POST" action="" class="" id="loginForm">
+        <div class="main-login-box">
+            {{ form.hidden_tag() }}
+            <div class="usernameField">
+                {{ form.username.label }}
+                {% if form.username.errors %}
+                    {{ form.username(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                            <span class="is-invalid">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.username(autocomplete="off") }}
+                {% endif %}
+            </div>
+            <div class="passwordField">
+                {{ form.password.label }}
+                {% if form.password.errors %}
+                    {{ form.password(class="is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.password }}
+                {% endif %}
+            </div>
 
-                </div>
-                {% else %} {{form.username( autocomplete="off")}} {% endif %}
+            
+            <div class="emailField" style="display: none;">
+                {{ form.email(autocomplete="off") }}
 
             </div>
-            <div class="">
-                {{form.password.label}} {% if form.password.errors %} {{form.password(class="is-invalid")}}
-                <div class="invalid-feedback">
-                    {% for error in form.password.errors %}
-                    <span>
-                            {{error}}
-                          </span> {% endfor %}
-
-                </div>
-                {% else %} {{form.password}} {% endif %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="forgotPasswordCheckbox" name="RESET_PASSWORD" value="RESET_PASSWORD">
+                <label class="form-check-label" for="forgotPasswordCheckbox">
+                    forgot  password ?
+                </label>
             </div>
-
+            
             <div class="addButton details">
-                {{form.submit(class = "btn btn-primary")}}
+                {{ form.submit(class="btn btn-primary") }}
             </div>
-
-
+        </div>
     </form>
-    </div>
-    {% endblock %}
+</div>
+
+<script>
+    document.getElementById("forgotPasswordCheckbox").addEventListener("change", function() {
+        var emailField = document.querySelector(".emailField");
+        var usernameField = document.querySelector(".usernameField");
+        var passwordField = document.querySelector(".passwordField");
+        
+        if (this.checked) {
+            emailField.style.display = "block";
+            usernameField.style.display = "none";
+            passwordField.style.display = "none";
+
+            usernameField.querySelector("input").disabled = true;
+            passwordField.querySelector("input").disabled = true;
+            
+
+
+            
+        } else {
+            emailField.style.display = "none";
+            usernameField.style.display = "block";
+            passwordField.style.display = "block";
+
+            usernameField.querySelector("input").disabled = false;
+            passwordField.querySelector("input").disabled = false
+
+
+         
+        }
+    });
+</script>
+
+{% endblock %}

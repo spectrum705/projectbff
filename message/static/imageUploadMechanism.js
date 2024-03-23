@@ -8,13 +8,50 @@ var fileInput = document.getElementById("id_images");
 // Add a change event listener to the file input
 fileInput.addEventListener("change", function (event) {
     // Get the selected files
-    var imageFiles = event.target.files;
+    // var maxSize = 4 * 1024 * 1024;
     
+    
+    var totalSizeLimit = 19 * 1024 * 1024; // 4.5 MB in bytes
+    var totalSize = 0;
+    var imageFiles = event.target.files;
+    var allowedTypes = ['image/jpeg','image/jpg', 'image/png', 'image/gif'];
+
+    
+    console.log("Total selected files:", imageFiles.length);
+    // Iterate over each selected file to calculate the total size
+    for (var i = 0; i < imageFiles.length; i++) {
+        totalSize += imageFiles[i].size; // Add the size of each file to the total size
+        console.log("File size:", totalSize,"/",totalSizeLimit);
+            // Check if the file type is allowed
+       
+             // Check if the file type is allowed
+        if (!allowedTypes.includes(imageFiles[i].type)) {
+            alert("Unsupported file type. Please upload images in JPG, PNG, or GIF format.");
+            event.target.value = ""; // Clear the file input field
+            return;
+        }
+
+
+
+        }
+
+    // Check if the total size exceeds the limit
+    if (totalSize > totalSizeLimit) {
+        // Display a warning pop-up message
+        
+        alert("Limit exceeded. You can only upload upto 20mb of images In total.");
+        
+        // Clear the file input field
+        event.target.value = "";
+        return;
+    }
+
+
     
      // Check if the number of selected images exceeds 12
-     if (imageFiles.length > 12) {
+     if (imageFiles.length > 8) {
         // Display a warning pop-up message
-        alert("You can only upload up to 12 images. Please re-upload.");
+        alert("You can only upload up to 8 images. Please re-upload.");
 
         // Clear the file input field
         event.target.value = "";

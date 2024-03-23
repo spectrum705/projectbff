@@ -30,9 +30,10 @@
             <div class="stamp-outline">        
                 <div class="stamp-border">
                     <div class="stamp-background">
-                    <div class="stamp-image-background" style="background: url({{message.stamp_url}}); background-size: contain;     background-repeat: no-repeat;
+                    <div class="stamp-image-background" style="background: url('data:image/jpeg;base64,{{ stamp }}'); background-size: contain;     background-repeat: no-repeat;
                     "> 
-                        
+                    <!-- <div class="stamp-image-background" style="background: url({{message.stamp_url}}); background-size: contain;     background-repeat: no-repeat;
+                    ">  -->
                     </div>
                     <div class="callout timestamp">  
                         <h6  >{{message.timestamp}} <br>By {{message.author}}</h6> 

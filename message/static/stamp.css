@@ -98,7 +98,7 @@
 
 .stamp-title{
   display:flex;
-  margin-bottom: 14%;
+  margin-bottom: 4%;
 }
 
 .full{
@@ -154,6 +154,9 @@
       top: -6%;
       left: 31%;
 
+  }
+  .stamp-title{
+    margin-bottom: 25%;
   }
 
   .stamp-border .stamp-background .stamp-image-background {

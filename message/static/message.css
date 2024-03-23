@@ -4,7 +4,13 @@
 
 /* Add other styles as needed */
 
+::-moz-selection { /* Code for Firefox */
+  background: #FFF165;
+}
 
+::selection {
+  background: #fff586;
+}
 .letter-title{
   width: 70%;
 }
@@ -27,7 +33,7 @@ h6 {
  
 .readind_stuff { 
     padding-top: 2em; 
-    width: 62%; 
+    width: 58%; 
     margin: 0 auto; 
 } 
  

@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block content %}
-
+{% block write %}
 
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 <link
@@ -30,7 +30,7 @@
                 
 
 
-                {{form.images(id="id_images"  ,style="display: none")}}
+                {{form.images(id="id_images"  ,style="display: none", accept=".jpg, .jpeg, .png, .gif")}}
              </div>
         <!-- {{form.content(class="ui-autocomplete-input content write" ,style="padding: 2.8em;",autocomplete="off", id="theContent")}} -->
       
@@ -107,5 +107,7 @@ submitButton.addEventListener("click", function () {
 
 
 </script>
+
+{% endblock %}
 
 {% endblock %}

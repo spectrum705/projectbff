@@ -1,6 +1,8 @@
 # Byte-compiled / optimized / DLL files
 .space
 message/.env
+consumer/.env
+
 __pycache__/
 *.py[cod]
 *$py.class
