@@ -6,6 +6,7 @@ flask_login
 flask_mongoengine
 flask-bcrypt
 cryptography
+flask-fs
 passlib
 pytz
 pyjwt
