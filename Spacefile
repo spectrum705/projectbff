@@ -27,3 +27,11 @@ micros:
           default: ""
         - name: RAPID_API_KEY
           default: ""
+        - name: ConsumerAPI
+        default: ""
+        - name: CurrentUrl
+        default: ""
+        - name: CallbackUrl
+        default: ""
+        - name: QSTASH_TOKEN
+        default: ""

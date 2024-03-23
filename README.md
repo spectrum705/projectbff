@@ -1,6 +1,6 @@
 # projectbff
 
-Welcome to Project BFF, your personal space for staying connected with your best friends. Project BFF allows you to send and receive heartfelt letters to and from your selected partners, providing a secure and enjoyable way to maintain your most cherished relationships.
+Welcome to Project BFF, your personal space for staying connected with your best friends. It allows you to send and receive heartfelt letters to and from your selected friends, providing a secure and enjoyable way to maintain your most cherished bonds.
 
 
 ## Features

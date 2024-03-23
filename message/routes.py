@@ -266,7 +266,7 @@ def create():
 # except:
     #     return render_template("error.html")
 
-
+#TODO check and read all the readme and infos onnce
 @app.route('/pinned_view',methods=["GET","POST"])
 def pinned_view():
     # 99a74794-3194-44fc-8957-053ed2036fdc
