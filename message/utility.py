@@ -8,7 +8,7 @@ load_dotenv()
 import base64
 import requests
 from threading import Thread
-from multiprocessing import  Queue
+import queue
 import base64
 from message.security import encrypt_file_chunked
 from message import Tasks
@@ -163,11 +163,37 @@ def make_letter_json(title, content, author,key, receiver, timestamp):
 
 
 
-def test(sec):
-    print("STARTED>>>>")
-    time.sleep(sec)
-    print("ENDEDED")
-    return True
+
+
+# Using AI GEN
+def make_stamp(title):
+   
+    url = "https://animimagine-ai.p.rapidapi.com/generateImage"
+    RAPID_API_KEY = os.getenv('RAPID_API_KEY') or os.environ["RAPID_API_KEY"]
+
+
+    payload = {
+        "selected_model_id": "anything-v5",
+        "selected_model_bsize": "512",
+        "prompt": "create an beautiful art for the following title: "+title
+    }
+    headers = {
+        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "X-RapidAPI-Key": RAPID_API_KEY,
+        "X-RapidAPI-Host": "animimagine-ai.p.rapidapi.com"
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        stamp_url=response.json()["imageUrl"]
+    except:
+        stamp_url="https://i.pinimg.com/originals/83/cd/ef/83cdef4f9b31d3aa9da285d1219a4d7b.jpg"
+
+    response = requests.get(stamp_url)
+    img = response.content    
+
+    return img
 
 
 
@@ -209,8 +235,8 @@ def queue_images(encrypted_queue, content):
     print("Images sent to the queue")
 
 def process_images(letter_content, image_data_list, symmetric_key):
-    compressed_queue = Queue()
-    encrypted_queue = Queue()
+    compressed_queue =  queue.Queue()
+    encrypted_queue =  queue.Queue()
     print("MAIN IMG TASK STARTED")
     
     # Compression in a separate thread
