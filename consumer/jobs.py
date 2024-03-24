@@ -169,7 +169,7 @@ def validate_with_key(key, signature, url, body):
     
     
     return {'status': True, "info":"Token is valid"}
-    
+    # next key is only used when you rerol for a new key
 def verify_request(signature,current_key, next_key,url,body):
     # print("task:",task)
     
