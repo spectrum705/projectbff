@@ -111,13 +111,10 @@ def make_stamp(title):
     try:
         response = requests.post(url, json=payload, headers=headers)
         stamp_url=response.json()["imageUrl"]
-    # print(response.json())
     except:
         stamp_url="https://i.pinimg.com/originals/83/cd/ef/83cdef4f9b31d3aa9da285d1219a4d7b.jpg"
 
     response = requests.get(stamp_url)
-    # print(response.content)
-    # img = Image.open(BytesIO(response.content))
     img = response.content    
 
     return img
@@ -132,47 +129,6 @@ def send_notification(receiver, title, author):
     #     send_email(to=user.email,subject="YOU JUST GOT A NEW LETTER !!",content=text_body)
     # return True
 
-
-# def make_letter(letter_data):
-#     print(type(letter_data['enc_content']))
-#     enc_content = base64.b64decode(letter_data['enc_content'])
-#     print(type(enc_content))
-#             # encrypt_symmetric_key = base64.b64decode(letter_data['encrypt_symmetric_key'])
-#     stamp_url=make_stamp(letter_data["letter_title"])
-#     # print(f"name{letter_data['letter_title']}")
-    
-#     letter=Letters(title=letter_data["letter_title"],
-#                 content=enc_content   ,
-#                 symmetric_key=letter_data["encrypted_symmetric_key"],
-#                 author=letter_data["author"],
-#                 receiver=letter_data["receiver"],
-#                 status="sent",
-#                 timestamp=letter_data["timestamp"], 
-#                 myid=letter_data["letter_id"],
-#                 stamp_url=stamp_url
-#                 )
-   
-#     # letter.save()
-#     print( "TASK FINISHED!! ")
-#     return True
-
-# def add_images(image_data_list, letter_id):
-#     letter= Letters.objects(myid=letter_id).first()
-#     print(type(image_data_list[0]))
-#     print(type(base64.b64decode(image_data_list[0])))
-    
-#     for encoded_image in image_data_list:
-# # Decode base64 encoded image data
-
-#         image_data = base64.b64decode(encoded_image)
-       
-#         grid_fs_proxy = db.fields.GridFSProxy()
-
-#         grid_fs_proxy.put(image_data)
-#         letter.images.append(grid_fs_proxy)
-#     letter.attachment = True
-#     # letter.save()# add images here
-#     return True
 
 
 def validate_with_key(key, signature, url, body):

@@ -1,6 +1,5 @@
 mongoengine
-flask_login
-flask
+flask==2.2.5
 pyjwt
 pillow
 gunicorn==20.0.4

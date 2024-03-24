@@ -1,6 +1,4 @@
-from flask_login import UserMixin
 import random
-# from bson.objectid import ObjectId
 import uuid
 import mongoengine as db
 import os
@@ -16,36 +14,28 @@ DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
 db.connect(host=DB_URI)
 
 
-class User(db.Document, UserMixin):
+class User(db.Document):
     username = db.StringField(required=True, unique=True)
-    
+
     partners = db.ListField(db.StringField())
     password = db.StringField(required=True)
     # birthday = db.DateField(require=True)
     public_key = db.StringField(required=True)
     private_key = db.StringField(required=True)
     backup_key = db.StringField(required=True)
-    
+
     mobile = db.StringField()
     email = db.StringField(unique=True)
     friend_code = db.StringField( unique=True)
-    
+    verified = db.BooleanField(required=True, default=False)
+
     myid= db.IntField(db_field='id',primary_key=True, required=True,default=(random.randint(1,10000)))
+
     
     
     
     
-        
-        
-        
-    @staticmethod
-    def isVerified(username):
-        usr=User.objects(username=username).first()
-        print(usr.friend_code)
-        if usr.friend_code:
-            return True
-        else: 
-            return False
+    
         
     @staticmethod
     def FindUserByName(username):
@@ -55,19 +45,14 @@ class User(db.Document, UserMixin):
     def FindUserByEmail(email):
         usr=User.objects(email=email).first()
         return usr 
-    
-    def AddFriend(my_username,friends_Code):
-        friend = User.objects(friend_code=friends_Code).first()
-        user = User.objects(username=my_username).first()
-        print(">>",user.partners)        
-        if friend and (friend.username not in user.partners) and (friend!=user):
-            user.partners.append(friend.username)
-            friend.partners.append(user.username)
-            user.save()
-            friend.save()
-            return True, friend.username           
-        else:
-            return False, None
+    @staticmethod
+    def Verify(username):
+        # my_friend_code= ''.join(random.choices(string.ascii_uppercase, k=4))
+        usr=User.objects(username=username).first()
+        usr.verified = True
+        # usr.friend_code=my_friend_code
+        usr.save()
+        return True 
 
     def to_json(self):
         return {
@@ -96,12 +81,7 @@ class Letters(db.Document):
     
     
     
-    
-    @staticmethod
-    def UserLetterBox(user):
-        sortedLetters=sorted(Letters.objects(Q(receiver=user) & (Q(status="sent") | Q(status="read"))), key=lambda letters: datetime.strptime( letters.timestamp, "%H:%M, %d-%m-%Y"), reverse=True)
-        return sortedLetters
-    
+
     
     @staticmethod
     def Write(letter_data):
