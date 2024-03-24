@@ -510,12 +510,37 @@ def write():
             if all((item.filename != '') for item in form.images.data):  
                 # print("FILE TYPE 1!:",type(form.images.data[0]))
 
-                process_images(letter_content=task,image_data_list=form.images.data,symmetric_key=symmetric_key)
+                # process_images(letter_content=task,image_data_list=form.images.data,symmetric_key=symmetric_key)
+                final_image_list=[]
+                for file in form.images.data:
+                #     # print("file type",type(file))
+                # filename = secure_filename(file.filename)
+
+                # grid_fs_proxy = db.fields.GridFSProxy()
+                    img=compress_image(file)    
+                    enc_img=encrypt_file_chunked(img,symmetric_key)
+                    encoded_image = base64.b64encode(enc_img).decode('utf-8')
+                    final_image_list.append(encoded_image)
+                task["attached"] = True
+                task["image_data_list"] = final_image_list
+                send_to_queue(task)   
+               
+               
                
             else:
                
                 # when the letter doesnt have images 
                 send_to_queue(task=task)
+                     
+                   
+                    
+                    # image_list.append(enc_img)
+                    # final_image_list = []
+                    # for img in encrypted_images:
+                    
+                
+                
+                
                 
                 # print("FORMDATA:",form.images.data,type(form.images.data))
                 # image_list=[]
