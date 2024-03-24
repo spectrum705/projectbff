@@ -13,7 +13,7 @@ pyjwt
 Flask-WTF
 flask_uploads
 gunicorn==20.0.4
-requests
+requests==2.24.0
 twilio
 python-dotenv
 jinja2==3.1.3
