@@ -130,7 +130,7 @@ def generate_user_jwt_token(url, signing_key,json_data, event):
         "iss": "ProjectBff",
         "sub": url,
         "iat": current_time,
-        "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=12),
+        "exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=40),
         "jti": jti,  # Unique ID for the token
         "username": json_data["username"],
         "event":event

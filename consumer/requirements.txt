@@ -3,3 +3,5 @@ flask==2.2.5
 pyjwt
 pillow
 gunicorn==20.0.4
+GitPython
+

@@ -28,7 +28,7 @@ load_dotenv()
 # messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messaging_service_sid"]
 
 
-
+# TODO emails not getting delivered in deta
 # TODO check all try and excepts and add an Error info to the page
 @app.route('/', methods=["POST","GET"])
 def login():
@@ -51,18 +51,18 @@ def login():
                 current_url = os.getenv('CurrentUrl') or os.environ["CurrentUrl"]   
                 print("got url")
                         
-                flash("A link to reset your password will be sent to your Email soon, use it fast","info")
                 reset_link = generate_user_jwt_token(event=Events.reset_password.value,signing_key=key, url=current_url,json_data=user.to_json())
                 print("made token")
                 
                 reset_link = current_url + f"/reset_password/{reset_link}"  
                 body = generate_email_body(receiver=user.username, link=reset_link, event=Events.reset_password.value)
                 # send_email(to=user.email,subject="Reset Password",content=body)
-                try:
-                    t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"Reset Password","content":body})
-                    t1.start()
-                except:
-                    pass
+                # try:
+                t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"Reset Password","content":body})
+                t1.start()
+                flash("A link to reset your password will be sent to your Email soon, use it fast","info")
+                # except:
+                #     pass
                 
                 print("sent email")
                 
@@ -107,7 +107,7 @@ def login():
                     flash("You're account isn't verified, new link will be sent soon. Check your Email ASAP to verify now.", "info")
 
             else:
-                flash("Wrong username or password, check 🍄 ", "danger") 
+                flash("Wrong username or password, check again 🍁🍁🍁 ", "danger") 
     return render_template("login.html", title='Login', form = form)
     # except:
     #     return render_template("error.html")
@@ -510,23 +510,23 @@ def write():
             if all((item.filename != '') for item in form.images.data):  
                 # print("FILE TYPE 1!:",type(form.images.data[0]))
 
-                # process_images(letter_content=task,image_data_list=form.images.data,symmetric_key=symmetric_key)
-                final_image_list=[]
-                for file in form.images.data:
-                #     # print("file type",type(file))
-                # filename = secure_filename(file.filename)
+                process_images(letter_content=task,image_data_list=form.images.data,symmetric_key=symmetric_key)
+                # final_image_list=[]
+                # for file in form.images.data:
+                # #     # print("file type",type(file))
+                # # filename = secure_filename(file.filename)
 
-                # grid_fs_proxy = db.fields.GridFSProxy()
-                    img=compress_image(file)    
-                    enc_img=encrypt_file_chunked(img,symmetric_key)
-                    encoded_image = base64.b64encode(enc_img).decode('utf-8')
-                    final_image_list.append(encoded_image)
-                task["attached"] = True
-                task["image_data_list"] = final_image_list
-                send_to_queue(task)   
+                # # grid_fs_proxy = db.fields.GridFSProxy()
+                #     img=compress_image(file)    
+                #     enc_img=encrypt_file_chunked(img,symmetric_key)
+                #     encoded_image = base64.b64encode(enc_img).decode('utf-8')
+                #     final_image_list.append(encoded_image)
+                # task["attached"] = True
+                # task["image_data_list"] = final_image_list
+                # send_to_queue(task)   
                
                
-               
+            # TODO limit single pic size, giving error in deta deployemnt
             else:
                
                 # when the letter doesnt have images 
@@ -626,12 +626,13 @@ def feedback():
         title=form.subject.data
         feedback=form.feedback.data
         admin_id=os.getenv('admin_id') or os.environ["admin_id"]
-        feedback= feedback+f"  \n USER_DETAILS \n NAME:{current_user['username']}, \n  EMAIL: {current_user['email']}"
-        
-        # send_email(to=admin_id, subject="PROJECTBFF USER FEEDBACK", content=feedback)
+        feedback= feedback+f"  \n\n USER_DETAILS \n NAME:{current_user['username']}, \n  EMAIL: {current_user['email']}"
+        # TODO threads not working in deta !
         body = generate_email_body(event=Events.feedback.value,feedback=feedback,title= title)
-        t1 = Thread(target=send_email, kwargs={"to":admin_id,"subject":"ProjectBff UserFeedback","content":body})
-        t1.start()
+        send_email(to=admin_id, subject="ProjectBff UserFeedback", content=body)
+        # TODO testing without thread for senind emails
+        # t1 = Thread(target=send_email, kwargs={"to":admin_id,"subject":"ProjectBff UserFeedback","content":body})
+        # t1.start()
 
         
         flash("Your Feedback is important, Thank you 🫡🫡", "info")
