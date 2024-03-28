@@ -7,3 +7,4 @@ GitPython
 python-dotenv
 dnspython
 requests==2.24.0
+twilio
