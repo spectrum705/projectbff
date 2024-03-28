@@ -4,7 +4,7 @@ from notify import *
 import git
 
 
-from models import Letters, User
+from models import Letters
 
 
 
