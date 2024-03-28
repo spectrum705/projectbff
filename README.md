@@ -87,16 +87,9 @@ python3 consumer.py
 ```
 ## Environment Variables
 
-create a .env file inside message/ and add the following variables
-```bash
-    DB_URI=""
-    account_sid=""
-    auth_token=""
-    messaging_service_sid=""
-    APP_SECRET=""
-    MORE TO ADD
+create a .env file inside for main applicationa and consumer. 
+Refer to (/env_list.md)
 
-```
 
 ## Working of the Project
 The project is built with simple html and css and certain parts of the project has javascript added to it. The main part, the backend is  built using Flask in python. We are are MongoDB a NoSQL database for safely storing the data. We are using QStash as task queue.
