@@ -7,6 +7,8 @@ import os
 import jwt
 import hashlib
 from enum import Enum
+from models import User
+from notify import *
 
 
 class Tasks(Enum):  
@@ -106,15 +108,29 @@ def make_stamp(title):
 
     return img
 
-def send_notification(receiver, title, author):
+def send_notification(receiver, title, author,link):
     pass
-    # user=User.objects(username=receiver).first()
-    # text_body=generate_notification_body(receiver=receiver, sender=author, title=title)
-    # if user.mobile:
-    #     send_sms(to=user.mobile,body=text_body)
-    # if user.email:
-    #     send_email(to=user.email,subject="YOU JUST GOT A NEW LETTER !!",content=text_body)
-    # return True
+    user=User.FindUserByName(username=receiver)
+    text_body = generate_email_body(event=Events.new_letter.value,receiver=receiver,sender=author,link=link, title=title)
+    adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
+            
+    text_sms = f"""            
+        Hi {random.choice(adj)} {receiver}, \n Hope you are smiling. Your precious friend {author} just sent you a letter on ProjectBFF. The title says "{form.title.data}". Take a look whenever you want and maybe let them know about it, \n
+        have a happy day and take care.
+        see ya :)
+        """
+    
+    if user.email:
+        try:
+            send_email(to=user.email,subject="YOU JUST GOT A NEW LETTER !!",content=text_body)
+        except:
+            pass
+    if user.mobile:
+        try:
+            send_sms(to=user.mobile,body=text_sms)
+        except:
+            pass
+    return True
 
 
 

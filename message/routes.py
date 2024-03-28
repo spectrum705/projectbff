@@ -22,12 +22,6 @@ from message.utility import *
 load_dotenv()
 
 
-# DB_URI = os.getenv('DB_URI') or os.environ["DB_URI"]
-# account_sid = os.getenv('account_sid') or os.environ["account_sid"]
-# auth_token  = os.getenv('auth_token') or os.environ["auth_token"]
-# messaging_service_sid = os.getenv('message_service_sid') or  os.environ["messaging_service_sid"]
-
-
 # TODO emails not getting delivered in deta
 # TODO check all try and excepts and add an Error info to the page
 @app.route('/', methods=["POST","GET"])
@@ -56,10 +50,10 @@ def login():
                 
                 reset_link = current_url + f"/reset_password/{reset_link}"  
                 body = generate_email_body(receiver=user.username, link=reset_link, event=Events.reset_password.value)
-                # send_email(to=user.email,subject="Reset Password",content=body)
+                send_email(to=user.email,subject="Reset Password",content=body)
                 # try:
-                t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"Reset Password","content":body})
-                t1.start()
+                # t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"Reset Password","content":body})
+                # t1.start()
                 flash("A link to reset your password will be sent to your Email soon, use it fast","info")
                 # except:
                 #     pass
@@ -98,12 +92,12 @@ def login():
                     verification_link=  current_url + f"/verify_user/{user_token}"
 
                     body = generate_email_body(receiver=user.username, event=Events.resend_verify_link.value, link=verification_link)
-                    # send_email(to=user.email,subject="New Verification Link",content=body)
-                    try:
-                        t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"New Verification Link","content":body})
-                        t1.start()
-                    except:
-                        pass
+                    send_email(to=user.email,subject="New Verification Link",content=body)
+                    # try:
+                    #     t1 = Thread(target=send_email, kwargs={"to":user.email,"subject":"New Verification Link","content":body})
+                    #     t1.start()
+                    # except:
+                    #     pass
                     flash("You're account isn't verified, new link will be sent soon. Check your Email ASAP to verify now.", "info")
 
             else:
@@ -249,12 +243,12 @@ def create():
         verification_link=  current_url + f"/verify_user/{user_token}"
 
         body = generate_email_body(receiver=username, event=Events.welcome.value,password=password, link=verification_link, recover_code=recovery_code.lower()                                   )
-        # send_email(to=email,subject="🌟 Welcome to Project BFF! 🌟",content=body)
-        try:
-            t1 = Thread(target=send_email, kwargs={"to":email,"subject":"🌟 Welcome to Project BFF! 🌟","content":body})
-            t1.start()
-        except:
-            pass
+        send_email(to=email,subject="🌟 Welcome to Project BFF! 🌟",content=body)
+        # try:
+        #     t1 = Thread(target=send_email, kwargs={"to":email,"subject":"🌟 Welcome to Project BFF! 🌟","content":body})
+        #     t1.start()
+        # except:
+        #     pass
         
         
         flash('Account created successfully! Check your Email ID to verify the account ASAP! 🦚🦚', 'success')
@@ -483,23 +477,6 @@ def write():
             task=make_letter_json(title=form.title.data,content=encrypted_content, timestamp=now,key=encrypted_symmetric_key,author=author,receiver=receiver.username)
             # TODO put all the keys to enc
             
-            # stamp_url=make_stamp(title)
-
-            # letter=Letters(title=title,
-            #                 content=encrypted_content   ,
-            #                 symmetric_key=base64.b64encode(encrypted_symmetric_key).decode('utf-8'),
-            #                 author=author,
-            #                 receiver=receiver.username,
-            #                 status="sent",
-            #                 timestamp=now, 
-            #                 myid=str(uuid.uuid4()),
-            #                 # stamp_url=stamp_url
-            #                 )
-    
-            # enc_content_base64 = base64.b64encode(encrypt_message_chunked( form.content.data, symmetric_key)).decode('utf-8')
-            # encrypt_symmetric_key_base64 = base64.b64encode(encrypt_symmetric_key(symmetric_key, recipient_public_key)).decode('utf-8')
-            
-          
             # # send_to_queue(task)
             
             
@@ -648,7 +625,7 @@ def process_letter():
     
     
     task=request.get_json()
-    signature = request.headers
+    signature = request.headers 
     print(">>>>>>>>>>tgot callback url :", signature)
     print(">>>>>>>>>>tgot callback url :", task)
     
@@ -666,10 +643,7 @@ def letter(id):
 
     if current_user['username'] == toRead.receiver:
         if toRead.author in current_user["partners"] and toRead.status == "sent":
-            # stamp_url=make_stamp(toRead.title)
-            
-            # print("stamp  url in letter page",stamp_url)
-            # threading.Thread(target=stamping_letter(toRead.id))
+           
            
             Letters.objects(myid=id).update(status="read")#, stamp_url=stamp_url)
         # converting string to bytes
