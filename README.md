@@ -88,7 +88,7 @@ python3 consumer.py
 ## Environment Variables
 
 create a .env file inside for main applicationa and consumer. 
-Refer to (/env_list.md)
+Refer to [Environment variable list](/env_list.md)
 
 
 ## Working of the Project
