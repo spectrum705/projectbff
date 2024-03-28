@@ -11,7 +11,7 @@ fileInput.addEventListener("change", function (event) {
     // var maxSize = 4 * 1024 * 1024;
     
     
-    var totalSizeLimit = 19 * 1024 * 1024; // 4.5 MB in bytes
+    var totalSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB in bytes
     var totalSize = 0;
     var imageFiles = event.target.files;
     var allowedTypes = ['image/jpeg','image/jpg', 'image/png', 'image/gif'];
