@@ -6,3 +6,4 @@ gunicorn==20.0.4
 GitPython
 python-dotenv
 dnspython
+requests==2.24.0
