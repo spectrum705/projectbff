@@ -28,7 +28,7 @@ Take Project BFF with you wherever you go! Our mobile-friendly Progressive Web A
 
 
 ## Demo
-[ProjectBff](https://tinyurl.com/projectbffs)
+[ProjectBff](https://projectbff.onrender.com/)
 Two demo Accounts with the following credentials have been created so you can test it out if you want.
 ```bash
 username: alpha
