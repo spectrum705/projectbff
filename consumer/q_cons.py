@@ -4,7 +4,7 @@ from notify import *
 import git
 
 
-from models import Letters
+from models import Letters, User
 
 
 
@@ -57,7 +57,8 @@ def process_letter():
                 if not task["attached"]:
                     print("ënterin")
                     Letters.Write(task)
-                    send_notification(title=task["letter_title"],link=task["url"],author=task["author"],receiver=task["receiver"])
+                    receiver = User.FindUserByName(task["receiver"])
+                    send_notification(title=task["letter_title"],link=task["url"],author=task["author"],receiver=receiver)
                     print( "LETTER(NO IMAGES) CREATION TASK FINISHED!! ")
             
                     return jsonify({"status":"letter created"}),200     
@@ -65,8 +66,8 @@ def process_letter():
                     print(f"got task:{task['letter_title']} | type:{type(task)}...started")               
                     letter_id = Letters.Write(task)
                     Letters.AddImage(image_data_list=task["image_data_list"],letter_id=letter_id)
-                    send_notification(title=task["letter_title"],link=task["url"],author=task["author"],receiver=task["receiver"])
-                    
+                    receiver = User.FindUserByName(task["receiver"])
+                    send_notification(title=task["letter_title"],link=task["url"],author=task["author"],receiver=receiver)                    
                     print( "IMAGE ADD TASK FINISHED!! ")                        
                     return jsonify({"status":"LETTER WITH IMAGES CREATED"}),200       
             

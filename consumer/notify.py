@@ -4,12 +4,24 @@ from email.message import EmailMessage
 import smtplib
 import random
 from dotenv import load_dotenv
-from jobs import Events
+from enum import Enum
 
 load_dotenv()
 
  
+class Tasks(Enum):  
+    make_letter = "MAKE_LETTER"
 
+
+  
+class Events(Enum):
+    new_letter = "NEW_LETTER"
+    feedback = "FEEDBACK"
+    welcome = "WELCOME"
+    resend_verify_link = "RESEND_TOKEN"
+    reset_password = "RESET_PASSWORD"
+
+    
 
 
 
