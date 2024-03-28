@@ -4,12 +4,9 @@ import base64
 from io import BytesIO
 import requests
 import os
-# from models import Letters, db, User
-import time
 import jwt
 import hashlib
 from enum import Enum
-from cryptography.fernet import Fernet
 
 
 class Tasks(Enum):  
@@ -25,16 +22,6 @@ class Events(Enum):
     reset_password = "RESET_PASSWORD"
 
     
-
-def encrypt_file_chunked(message, key):
-    cipher_suite = Fernet(key)
-    encrypted_message = cipher_suite.encrypt(message)
-    return encrypted_message
-#
-def decrypt_file_chunked(encrypted_message, key):
-    cipher_suite = Fernet(key)
-    decrypted_message = cipher_suite.decrypt(encrypted_message)
-    return decrypted_message
 
 
 
