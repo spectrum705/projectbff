@@ -162,10 +162,31 @@ def reset_password(reset_code):
     
    
 
-
+@app.route('/add_friend/<code>', methods=['GET', 'POST'])
 @app.route('/add_friend', methods=['GET', 'POST'])
-def add_friend():
-    try:
+@login_required
+def add_friend(code=None):
+    # TODO add share friend link
+    
+    # try:
+    if code:
+        code=code.upper().strip()
+        print("got code from URL:", code)
+        
+        print("USERname my:",current_user["username"])
+        status,f_name = User.AddFriend(my_username=current_user["username"],friends_Code=code)
+        if status:
+            flash(f" Ahoy ! {f_name} added as your friend 😊🫱🏼‍🫲🏼","success" )
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid friend Code or User is already your friend 🍄🍄", "danger")
+            return redirect(url_for("home"))
+    
+    
+    
+    
+    
+    else:
         form= AddFriendForm()
 
         if form.validate_on_submit():
@@ -175,18 +196,19 @@ def add_friend():
             # print("TYPE",type(code))
             code=code.upper()
             
-          
+        
             status,f_name = User.AddFriend(my_username=current_user["username"],friends_Code=code)
             if status:
                 flash(f" Ahoy ! {f_name} added as your friend 😊🫱🏼‍🫲🏼","success" )
                 return redirect(url_for("home"))
             else:
                 flash("Invalid friend Code or User is already your friend 🍄🍄", "danger")
- 
+                return redirect(url_for("add_friend"))
+
             
         return render_template('new_friend_page.html', form=form)            
-    except:
-        return render_template("error.html")
+    # except:
+    #     return render_template("error.html")
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -343,9 +365,10 @@ def home():
         return redirect(url_for("logout"))
     # filter it by status other than draft
     sortedLetters= Letters.UserLetterBox(user=current_user["username"])
-
+    
+    current_link = os.getenv('CurrentUrl') or os.environ["CurrentUrl"]
     # sortedLetters=None
-    return render_template("index.html", letters = sortedLetters)
+    return render_template("index.html", letters = sortedLetters, link=current_link)
     # except:        
     #     return render_template("error.html")
 
@@ -669,7 +692,8 @@ def letter(id):
         # stamp_data = base64.b64encode(toRead.stamp.read().decode('utf-8'))
         stamp_data = toRead.stamp.read()
         stamp_data = base64.b64encode(stamp_data).decode('utf-8')
-        if toRead.images != []: #toRead.attachment:
+        # if toRead.images != []: #
+        if toRead.attachment:
             
             attached_images = toRead.images 
             

@@ -54,9 +54,12 @@
   background-color: var(--color-bg);
   border: 0.25rem solid var(--color-fg);
 }
+.main-body{
+    background-color: rgb(255, 227, 204);
+}
 </style>
 
-<body>
+<body class="main-body">
    
   
    
@@ -64,7 +67,7 @@
 <header id="header">
     <!-- Navbar with container-fluid for full-width container -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+        <div class="container-fluid base-nav">
             {% if current_user["partners"]==[] %}
             <a class="navbar-brand" href="{{url_for('login')}}">
                 <h1 style="align-items: center; font-size: 1.7em;"> <u class="projectline">Welcome {{current_user["username"]}}🥳</u></h1>

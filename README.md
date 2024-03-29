@@ -114,7 +114,7 @@ Letters(
 All the required details of the letter are then used to form a json object, Which is then sent to the the QStash using it's API. 
 The letter data is stored there for sometime and then safely delivered to the Consumer endpoint which is deployed separtely at another instance. At the consumer side, we Authenticate the data received using the JSON Web Token(JWT). When a request is validated, we process the task according to the task.
 
-The point of using message queue was to reduce the time taken to process the request. There are various external APIs being used at the back, using the QStash to process the tasks at the back, helps save time and user can be freed As soon as we have gather all the gathered all the required user inputs.
+The point of using message queue was to reduce the time taken to process the request. There are various external APIs being used at the back, using the QStash to process the tasks at the back, helps save time and user can be freed As soon as we have gathered all the required user inputs.
 
 Later when the receiver of the letter reads the new letter, the content is decripted using their private key. Only the reciver can read the content. 
 

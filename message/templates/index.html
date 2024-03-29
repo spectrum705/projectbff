@@ -2,6 +2,10 @@
 
 <style>
     /* Add this to your existing CSS or in a separate stylesheet */
+    #share-icon{
+        cursor: pointer;
+
+    }
     .share-box {
       border: 2px solid aliceblue;
       border-radius: 10px;
@@ -21,6 +25,7 @@
 section{
     zoom: 0.9;
 }
+
 
 .bottom-right {
   position: fixed;
@@ -160,10 +165,43 @@ section{
     </div>
 </section>
 {% if current_user.is_authenticated %}
-<p class="bottom-right">({{ current_user["friend_code"] }})</p>
+<!-- <a type="hidden">https://stackoverflow.com/questions/45071353/copy-text-string-on-click</a> -->
+<p class="bottom-right" id="friend-code">{{ current_user["friend_code"] }} <i class="bi bi-share-fill" id="share-icon"></i></p>
 {% endif %}
 
 
+
+<script>
+    // Get the share icon element
+    var shareIcon = document.getElementById("share-icon");
+  
+    // Add a click event listener to the share icon
+    shareIcon.addEventListener("click", function() {
+      // Get the content of the <p> tag
+      var friendCode = document.getElementById("friend-code").textContent;
+  
+      // Create the link based on the content
+      
+      var link = "{{ link }}/add_friend/" + encodeURIComponent(friendCode);
+  
+      // Redirect to the generated link
+
+      navigator.clipboard.writeText(link)
+      .then(function() {
+        console.log('Link copied to clipboard: ' + link);
+        // Optionally, provide feedback to the user
+        alert('Link copied to clipboard, share it with your friends ');
+      })
+      .catch(function(error) {
+        console.error('Failed to copy link: ', error);
+        // Optionally, provide feedback to the user
+        alert('Failed to copy link. Please Reload.');
+      });
+
+   
+
+    });
+  </script>
 <!-- End Pricing Section -->
 <script type="module">
     import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';

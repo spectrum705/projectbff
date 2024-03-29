@@ -31,9 +31,11 @@ h6 {
 
 } 
  
-.readind_stuff { 
-    padding-top: 2em; 
-    width: 58%; 
+.reading_stuff { 
+    padding-top: 10%; 
+    padding-bottom: 12%; 
+
+    width: 56%; 
     margin: 0 auto; 
 } 
  
@@ -50,7 +52,10 @@ p {
     border-radius: 20px 20px 15px 15px; 
     border-style: none solid solid solid; 
     border-width: medium 1px 1px medium; 
-    border: 5px solid orange; 
+    border: 4px solid orange; 
+    /* border-image: url("{{ url_for('static', filename='letter_bg.png') }}");
+    border-image-outset: 15px; */
+
 } 
  
  
@@ -245,6 +250,7 @@ button {
       overflow-y: hidden;
       white-space: nowrap;
       height: auto;
+      margin: 1em;
     }
   
     
@@ -277,8 +283,9 @@ button {
     filter: saturate(40%) sepia(30%) hue-rotate(5deg); 
   }
 
-    .readind_stuff { 
-      padding-top: 2em; 
+    .reading_stuff { 
+      padding-top: 4em; 
+      padding-bottom: 4em; 
       width: 90%; 
       margin: 0 auto; 
   } 

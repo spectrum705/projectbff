@@ -74,7 +74,7 @@ def make_stamp(title):
     payload = {
         "selected_model_id": "anything-v5",
         "selected_model_bsize": "512",
-        "prompt": "create an beautiful art for the following title: "+title
+        "prompt": "create  cute cartoon stamp for the following title: "+title
     }
     headers = {
         "content-type": "application/json",
