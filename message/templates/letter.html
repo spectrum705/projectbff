@@ -17,7 +17,7 @@
 <style>
     #box{
         background-image: url("{{ url_for('static', filename='letter_bg.jpg') }}");
-        background-size: contain; /* or contain, depending on your preference */
+        background-size: auto; /* or contain, depending on your preference */
 
     }
 .reading_stuff{
@@ -35,7 +35,6 @@
 <div id="progress-bar"></div> 
  
 <div class="reading_stuff"> 
-    <div class="outter-box">
     <div id="box" style="padding:5.7%;"> 
     
      <div class="stamp-title">
@@ -85,7 +84,6 @@
             <button type="submit" class="fill" formaction="{{url_for('write')}}">Reply Now ?</button> 
         </form> 
     </div> 
-</div>
 </div> 
     {% if img_data  %} 
     <div class="external">
