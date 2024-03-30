@@ -3,12 +3,13 @@ html {
     scroll-behavior: smooth;
 }
 
-
+:root {
+    color-scheme: only light;
+  }
 #header {
     transition: all 0.5s;
     /* background: #add3ff; */
     background: rgb(198, 220, 250);
-
     padding: 15px 0;
     border-bottom: 1px solid #e6f2fb;
 }
@@ -547,6 +548,8 @@ section {
             padding-top: 2.9%;
         
         }
+
+      
 
     }
 

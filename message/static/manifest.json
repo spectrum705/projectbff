@@ -1,13 +1,13 @@
 {
-  "background_color": "#ffffff",
+  "background_color": "#",
   "dir": "ltr",
   "display": "standalone",
   "name": "project bff",
   "orientation": "portrait",
   "scope": "/",
-  "short_name": "Bff",
+  "short_name": "ProjectBff",
   "start_url": "/",
-  "theme_color": " #ffccff",
+  "theme_color": " #fddcfd",
   "icons": [
     {
       "src": "/65x65.png",

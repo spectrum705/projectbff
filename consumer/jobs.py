@@ -1,5 +1,5 @@
 from PIL import Image
-
+import random
 import base64
 from io import BytesIO
 import requests
@@ -74,7 +74,7 @@ def make_stamp(title):
     payload = {
         "selected_model_id": "anything-v5",
         "selected_model_bsize": "512",
-        "prompt": "create  cute cartoon stamp for the following title: "+title
+        "prompt": "create  cute cartoon for the following title: "+title
     }
     headers = {
         "content-type": "application/json",
@@ -84,10 +84,14 @@ def make_stamp(title):
     }
 
     try:
-        response = requests.post(url, json=payload, headers=headers)
+        response = requests.post(url, json=payload, headers=headers, proxies={'http':'','https':''})
+        print("res:",response.json())
         stamp_url=response.json()["imageUrl"]
-    except:
-        stamp_url="https://i.pinimg.com/originals/83/cd/ef/83cdef4f9b31d3aa9da285d1219a4d7b.jpg"
+    except Exception as e:
+
+        print("ERROR:",e)
+        
+        stamp_url= random.choice(cute_stamps)
 
     response = requests.get(stamp_url)
     img = response.content    

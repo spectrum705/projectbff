@@ -22,6 +22,40 @@ class Events(Enum):
     reset_password = "RESET_PASSWORD"
 
     
+cute_stamps  = [
+    "https://i.pinimg.com/originals/83/cd/ef/83cdef4f9b31d3aa9da285d1219a4d7b.jpg",
+    "https://i.pinimg.com/originals/e9/64/9d/e9649d32c643667a909890d3fabba102.jpg",
+    "https://i.pinimg.com/originals/94/d1/5a/94d15a107aa83ca743898a4e910fc6e3.png",
+    "https://i.pinimg.com/originals/84/fb/ae/84fbaec5983044aa2d8cf288ca1a5f4a.jpg",
+    "https://i.pinimg.com/originals/46/9e/30/469e3005a3a77c89a6c3960fa80f549a.jpg",
+    "https://i.pinimg.com/originals/95/45/94/9545948df1a2498bb332a06878d10cca.jpg",
+    "https://i.pinimg.com/originals/d9/7d/6a/d97d6a823f10713620589bcb6b7842c7.jpg",
+    "https://i.pinimg.com/564x/9d/c8/92/9dc892fe84e6eaf70c7d0bb082869687.jpg",
+    "https://i.pinimg.com/originals/c9/17/51/c91751068aaadfc668829af7e8db8ff5.jpg",
+    "https://i.pinimg.com/originals/db/d6/4f/dbd64f8b5f641068c191d01ad49d56c9.jpg",
+    "https://i.pinimg.com/originals/c9/85/e7/c985e77036a7fb3a505800fff6949efc.jpg",
+    "https://i.pinimg.com/originals/7f/43/50/7f4350279f26a6884bf69da5ef6cc454.jpg",
+    "https://i.pinimg.com/564x/65/2e/98/652e98feb0c98b929ddd210c20f89ea1.jpg",
+    "https://i.pinimg.com/originals/06/62/38/0662383e4c551fd7bf2b4c60a89f7af2.jpg",
+    "https://i.pinimg.com/564x/33/88/e9/3388e92c75cc478a79009bd7b2b7880e.jpg",
+    "https://i.pinimg.com/originals/f6/77/cc/f677cc00f0d4f90bd46e5f5cbbd86777.jpg",
+    "https://i.pinimg.com/564x/b3/21/19/b32119df3d5fa4b2748f811995826b20.jpg",
+    "https://i.pinimg.com/564x/0a/8e/49/0a8e494b87b822c06fe849a34210f42d.jpg",
+    "https://i.pinimg.com/564x/25/ab/6f/25ab6f6ad6d553e850d422dd47664aaf.jpg",
+    "https://i.pinimg.com/originals/35/bb/57/35bb57f1400d301a51607f5bed4a0e35.jpg",
+    "https://i.pinimg.com/564x/f5/19/52/f519526d3dbbcf9de52989cf97d54902.jpg",
+    "https://i.pinimg.com/originals/fd/ed/82/fded82c1d80785ccae330d0a8b06f6ea.jpg",
+    "https://i.pinimg.com/564x/cf/f1/4e/cff14e0ec5d744df10e0d5e77d270811.jpg",
+    "https://i.pinimg.com/originals/a4/72/77/a472775c17dc1a9a695191e11eabb6af.jpg",
+    "https://i.pinimg.com/originals/1a/77/a6/1a77a63b3fea144b96033c308252b801.jpg",
+    "https://i.pinimg.com/564x/ca/11/00/ca11000e7286c959f82d893dcbb8592b.jpg",
+    "https://i.pinimg.com/564x/6d/45/04/6d450440f1b0d13f5ed296b7b8077403.jpg",
+    "https://i.pinimg.com/564x/6b/99/4f/6b994ff4e96b124f50a58b574253eaa5.jpg",
+    "https://i.pinimg.com/564x/87/03/a3/8703a370b6b99bf251f1b429ea8513bb.jpg",
+    "https://i.pinimg.com/564x/bd/df/76/bddf763f975d852b61d50542d95a285c.jpg",
+    "https://i.pinimg.com/564x/bd/df/76/bddf763f975d852b61d50542d95a285c.jpg",
+    "https://i.pinimg.com/564x/66/91/31/669131eb2279630358efd5418c1405c0.jpg"
+]
 
 
 

@@ -226,7 +226,6 @@ def create():
         password = form.password.data.strip().lower()
         mobile = form.mobile.data.strip()
         email=  form.email.data.strip()
-        print(">>>",email,type(email))
         if email == "":
             flash("You need to Enter an Email address too ..","danger")
             return redirect(url_for('create'))
