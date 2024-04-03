@@ -99,7 +99,7 @@ html {
 }
 
 
-h1 {
+.page-title {
   position: relative;
   padding: 0;
   margin: 0;
@@ -112,12 +112,12 @@ h1 {
   transition: all 0.4s ease 0s;
 }
 
-h1 span {
+.page-title span {
   display: block;
   font-size: 0.5em;
   line-height: 1.3;
 }
-h1 em {
+.page-title em {
   font-style: normal;
   font-weight: 600;
 }
@@ -125,10 +125,10 @@ h1 em {
 
 
     
-.feature-title h1 {
+.feature-title .page-title {
   position:relative; font-size:20px; font-weight:700;  letter-spacing:0px; text-transform:uppercase; width:150px; text-align:center; margin:auto; white-space:nowrap; border:2px solid #222;padding:5px 11px 3px 11px;
 }
-.feature-title h1:before, .feature-title h1:after {
+.feature-title .page-title:before, .feature-title .page-title:after {
     background-color: #c50000;
     position:absolute; 
     content: '';
@@ -137,10 +137,10 @@ h1 em {
     width: 7px; border-radius:50%;
     bottom: 12px;
 }
-.feature-title h1:before {
+.feature-title .page-title:before {
    left:-20px;
 }
-.feature-title h1:after {
+.feature-title .page-title:after {
    right:-20px;
 }
 /* ------- Helper Styles -------------*/
@@ -156,7 +156,7 @@ h1 em {
 <!-- https://codepen.io/vedadesigns/pen/GPxYZg -->
 <div class="main">
     <div class="feature-title">
-        <h1>Features</h1>
+        <h1 class="page-title">Features</h1>
       </div>
     <ul class="cards">
     
