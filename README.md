@@ -92,8 +92,7 @@ create a .env file inside for main applicationa and consumer.
 
 
 ## Working of the Project
-The project is built with simple html and css and certain parts of the project has javascript added to it. The main part, the backend is  built using Flask in python. We are are MongoDB a NoSQL database for safely storing the data. We are using QStash as task queue.
-During letter generation the flask backend gets user input, encrypts the letter data(Yes, even the images). The letter is encrypted using the a Unique letter key, which can used only by the intended receiver.In case the user attaches images as well, the image file is validate, the image data is compressed and then encrypted.
+The project is built with simple html and css and certain parts of the project has javascript added to it. The main part, the backend is  built using Flask in python. We are using MongoDB a NoSQL database for safely storing the data. And We are using QStash as task queue. During letter generation the flask backend gets user input, encrypts the letter data(Yes, even the images). The letter is encrypted using the a Unique letter key, which can used only by the intended receiver.In case the user attaches images as well, the image file is validate, the image data is compressed and then encrypted.
 
 
 ##### LETTER OBJECT
