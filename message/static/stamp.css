@@ -98,7 +98,7 @@
 
 .stamp-title{
   display:flex;
-  margin-bottom: -7%;
+  margin-bottom: -11%;
 }
 
 .full{
@@ -115,8 +115,8 @@
     position: absolute;
     width: 38%;
     height: 65%;
-    top: -2%;
-    left: 53%;
+    top: -6%;
+    left: 64%;
     background: radial-gradient(transparent 0%, transparent 50%, #fdd399  50%, #fdd399  100%);
     background-size: 10% 10%;
     background-position: 6% 6%;
