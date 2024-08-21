@@ -15,7 +15,7 @@ load_dotenv()
 
 
 
-def generate_email_body(event, receiver=None,title=None, password=None,sender=None, link=None, recover_code=None, feedback=None):
+def generate_email_body(event, receiver=None,title=None,sender=None, link=None, recover_code=None, feedback=None):
     if event==Events.new_letter.value:
         adj=["cute","cute-lika-a-baby","cutest-hooman-in-the-world","pretty-like-the-moon","fluffy-lika-panda","awesome","sweet","amazing","wonderful","lovely","happy", "pretty","adorable", "tinyy","kawaii","cutesy","fluffy","funny", "cute-as-a-penguin", "supercute", "golu-molu-like-a-potato","tiny-like-a-penguin","rarest-gen","shingy-sunshine","melty-icecream", "fluff-ball"]
         notification_body = f"""            
@@ -30,8 +30,8 @@ def generate_email_body(event, receiver=None,title=None, password=None,sender=No
                                 <p style="margin-bottom: 20px;">Hi <strong>{random.choice(adj)} {receiver}</strong>,</p>
                                 <p style="margin-bottom: 20px;">Hope you are smiling. Your precious friend <strong>{sender}</strong> just sent you a letter on ProjectBFF. The title says "<strong>{title}</strong>". Take a look whenever you want and maybe let them know about it.</p>
                                 <p style="margin-bottom: 20px;">Have a happy day and take care. See ya :)</p>
-                            </div>
                          <a href="{link}" target="_blank" class="button" style="text-decoration: none;display: inline-block;background-color: #172535;color: #fff;padding: 10px 20px;font-size: 18px;font-weight: bold;border: none;cursor: pointer;">Read Now</a>
+                            </div>
                         </body>
                         </html>
 
@@ -116,7 +116,6 @@ def generate_email_body(event, receiver=None,title=None, password=None,sender=No
                         <p style="margin-bottom: 20px;">Your account has been successfully created, and we're excited for the beautiful journey ahead. Here are your login details:</p>
                         <div class="note" style="background-color: #f8f8f8;padding: 10px;border-radius: 5px;">
                             <p style="margin-bottom: 20px;"><strong>Username:</strong> [ {receiver} ]</p>
-                            <p style="margin-bottom: 20px;"><strong>Password:</strong> [ {password} ]</p>
                             <p style="margin-bottom: 20px;"><strong>Recovery Code:</strong> [ {recover_code} ]</p>
                             <p style="margin-bottom: 20px;"><strong>In case you ever forget your password you'll be able to reset it using the recovery code. So keep it really safe, I suggest you write it down somewhere.</strong></p>
                             <p style="margin-bottom: 20px;">Keep these really safe in your secret stash! 💌</p>

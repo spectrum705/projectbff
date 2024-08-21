@@ -265,7 +265,7 @@ def create():
             user_token= generate_user_jwt_token(json_data=user.to_json(), url= current_url, signing_key=key, event=Events.welcome.value)
             verification_link=  current_url + f"/verify_user/{user_token}"
 
-            body = generate_email_body(receiver=username, event=Events.welcome.value,password=password, link=verification_link, recover_code=recovery_code.lower()                                   )
+            body = generate_email_body(receiver=username, event=Events.welcome.value, link=verification_link, recover_code=recovery_code.lower())
             send_email(to=email,subject="🌟 Welcome to Project BFF! 🌟",content=body)
             # try:
             #     t1 = Thread(target=send_email, kwargs={"to":email,"subject":"🌟 Welcome to Project BFF! 🌟","content":body})

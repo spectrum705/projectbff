@@ -83,7 +83,7 @@ python3 main.py
 Running the consumer processing
 ```bash
 cd consumer
-python3 consumer.py
+python3 q_cons.py
 ```
 ## Environment Variables
 
@@ -149,7 +149,7 @@ Project BFF is an open-source project and I don't think I can take care of it al
 
 ## Support
 
-<a href="https://www.buymeacoffee.com/spectrum93"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=spectrum93&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O4O7VIIG5)
 
 
 Life goes on and sometimes people lose touch with each other. I never want to lose any of the precious friends I cherish and I don't want anyone else to get distant with your cherished friends either. This is a small way, to create a connection that can exist just between you and the people you cherish. If you support the initiative and sentiments or If you like the work and if you had a happy experience using it feel free to donate or support it any way (remember it's completely optional). It'd sure make me smile. I'm grateful for any of your support.
