@@ -55,7 +55,7 @@ def process_letter():
         # print(task)
         if task["task_name"]==Tasks.make_letter.value:
                 if not task["attached"]:
-                    print("ënterin")
+                    print(">>>started consumer task")
                     Letters.Write(task)
                     receiver = User.FindUserByName(task["receiver"])
                     send_notification(title=task["letter_title"],link=task["url"],author=task["author"],receiver=receiver)

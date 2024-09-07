@@ -45,16 +45,72 @@ def send_to_queue(task):
     )
     
 
-    print("Message produced without Avro schema!")
-    print("sent to Qstash:",response)
+    # print("Message produced without Avro schema!")
+    # print("sent to Qstash:",response)
         
     # except Exception as e:
     #     print(f"Error producing message: {e}")
     return True
 
+def process_attached_links(content):
+    # List of known URL schemes to check
+    url_schemes = ["http://", "https://", "www."]
+    
+    # Split the content into paragraphs
+    paragraphs = content.split("\n")
+    paragraphs = [x for x in paragraphs if x not in [""," ","\r"]]           
+    
+    # Initialize lists for links and normal paragraphs
+    links = []
+    normal_paragraphs = []
 
+    # Iterate through each paragraph
+    for para in paragraphs:
+        # Split the paragraph into words
+        words = para.split()
+        
+        # Initialize a temporary list for non-link words
+        non_link_words = []
+        
+        # Check each word to see if it's a link
+        for word in words:
+            if any(word.startswith(scheme) for scheme in url_schemes):
+                links.append(word)  # If a link, add to the links list
+            else:
+                non_link_words.append(word)  # Otherwise, keep it as part of the normal paragraph
+        
+        # Rebuild the paragraph from non-link words
+        if non_link_words:
+            normal_paragraphs.append(" ".join(non_link_words))
+    
+    return normal_paragraphs, links
 
+def process_links(content):
+    # List of known URL schemes to check
+    url_schemes = ["http://", "https://", "www."]
+    
+    # Split the content into words
+    words = content.split()
+    
+    # Initialize lists for links and non-link content
+    links = []
+    non_link_content = []
 
+    # Iterate through each word to check if it's a link
+    for word in words:
+        if any(word.startswith(scheme) for scheme in url_schemes):
+            links.append(word)
+        else:
+            non_link_content.append(word)
+
+    # Reconstruct the content without links
+    content_without_links = ' '.join(non_link_content)
+
+    # Add the links at the end under a "Links" label if any were found
+    if links:
+        content_without_links += "\n\nLINKS:\n" + "\n".join(links)
+    
+    return content_without_links
 
 def compress_image(file, max_width=1024, max_height=1024):
     """

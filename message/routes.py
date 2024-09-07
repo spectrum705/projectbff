@@ -488,7 +488,8 @@ def write():
                 # print("2. symmentric key used on letter for enc:", symmetric_key)
                 # title=form.title.data
                 # content=form.content.data
-                encrypted_content = encrypt_message_chunked( form.content.data, symmetric_key)
+                # content =  process_links(form.content.data)
+                encrypted_content = encrypt_message_chunked(form.content.data, symmetric_key)
                 print(type(encrypted_content))
                 encrypted_symmetric_key = encrypt_symmetric_key(symmetric_key, recipient_public_key)
                 # print("4. encrypted symmetric key:",encrypted_symmetric_key)
@@ -643,16 +644,19 @@ def letter(id):
             decrypted_content = decrypt_message_chunked(toRead.content, symmetric_key)
             # print("7. decrypted contet:",decrypted_content)
             
-            para = decrypted_content.split('\n')
-            para = [x for x in para if x]
-            # para = list(filter(lambda x : x != '', decrypted_content.split('\n\n')))
+            # para = decrypted_content.split("\n")
+            # para = [x for x in para if x not in [""," ","\r"]]           
+            # print(para)
+            
+            para, extracted_links = process_attached_links(decrypted_content)
+    
 
             print(toRead.status)
             PreSelect=toRead.author
             # print("preselect from letter page:",PreSelect)
             # print(toRead.images.read())
             # image=toRead.images.read()
-            return render_template("letter.html", message=toRead, content=para, PreSelect=PreSelect, img_data=image_data_list, stamp=stamp_data)
+            return render_template("letter.html", message=toRead, content=para, links=extracted_links,PreSelect=PreSelect, img_data=image_data_list, stamp=stamp_data)
         else:
             return redirect(url_for("home"))
     except Exception as error:

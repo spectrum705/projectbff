@@ -74,8 +74,20 @@
 
         <div class="para">
             {% for i in content %}
-            <p>{{i}}</p> 
+                <p>{{i}} </p>                        
             {% endfor %}
+
+            <br>
+            {% if links %}
+                <h4>Links:</h4>
+                <ul id="link-list">
+                    {% for link in links %}
+                        <li id="link-item">
+                            <a href="{{ link }}" target=”_blank”  id="links">{{ link }}</a>
+                        </li>
+                    {% endfor %} 
+                </ul>
+            {% endif %}
 
         </div>
         
