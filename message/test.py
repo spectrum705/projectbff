@@ -54,12 +54,62 @@ def process_links(content):
     return normal_paragraphs, links
 
 
-para, links = process_links(letter_content)
-print(para)
-print(links)
+# para, links = process_links(letter_content)
+# print(para)
+# print(links)
 
 
 
+def process_text(content):
+    # Split content into paragraphs
+    paragraphs = content.split("\n\n")
+    
+    # Initialize lists to store paragraphs and links
+    paragraphs_list = []
+    links_list = []
+
+    # Define basic URL indicators (can be expanded)
+    url_indicators = ['http://', 'https://', 'www.']
+
+    for paragraph in paragraphs:
+        # Split the paragraph into words to check for links
+        words = paragraph.split()
+        
+        # Check if any word contains a URL pattern
+        links = [word for word in words if any(word.startswith(indicator) for indicator in url_indicators)]
+        
+        if links:
+            # If there are links, add them to the links list
+            links_list.extend(links)
+            # Remove links from the paragraph for cleaner text
+            cleaned_paragraph = ' '.join([word for word in words if word not in links]).strip()
+            if cleaned_paragraph:  # Only add non-empty paragraphs
+                paragraphs_list.append(cleaned_paragraph)
+        else:
+            # If no links, just add the paragraph
+            paragraphs_list.append(paragraph.strip())
+
+    return paragraphs_list, links_list
+
+# Example usage
+content = """
+This is a sample paragraph with a link http://example.com
+
+Another paragraph with another link https://another-example.com
+heyo hooman
+
+A third paragraph without a link.
+"""
+
+paragraphs, links = process_text(content)
+
+print("Paragraphs:")
+for para in paragraphs:
+    print(f"- {para}")
+
+print("\nLinks:")
+for link in links:
+    print(f"- {link}")
 
 
 

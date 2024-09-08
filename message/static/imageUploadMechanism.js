@@ -11,7 +11,7 @@ fileInput.addEventListener("change", function (event) {
     // var maxSize = 4 * 1024 * 1024;
     
     
-    var totalSizeLimit = 4.5 * 1024 * 1024; // 4.5 MB in bytes
+    var totalSizeLimit = 20 * 1024 * 1024; // 4.5 MB in bytes
     var totalSize = 0;
     var imageFiles = event.target.files;
     var allowedTypes = ['image/jpeg','image/jpg', 'image/png', 'image/gif'];
@@ -49,7 +49,7 @@ fileInput.addEventListener("change", function (event) {
 
     
      // Check if the number of selected images exceeds 12
-     if (imageFiles.length > 8) {
+     if (imageFiles.length > 12) {
         // Display a warning pop-up message
         alert("You can only upload up to 8 images. Please re-upload.");
 

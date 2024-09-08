@@ -85,32 +85,6 @@ def process_attached_links(content):
     
     return normal_paragraphs, links
 
-def process_links(content):
-    # List of known URL schemes to check
-    url_schemes = ["http://", "https://", "www."]
-    
-    # Split the content into words
-    words = content.split()
-    
-    # Initialize lists for links and non-link content
-    links = []
-    non_link_content = []
-
-    # Iterate through each word to check if it's a link
-    for word in words:
-        if any(word.startswith(scheme) for scheme in url_schemes):
-            links.append(word)
-        else:
-            non_link_content.append(word)
-
-    # Reconstruct the content without links
-    content_without_links = ' '.join(non_link_content)
-
-    # Add the links at the end under a "Links" label if any were found
-    if links:
-        content_without_links += "\n\nLINKS:\n" + "\n".join(links)
-    
-    return content_without_links
 
 def compress_image(file, max_width=1024, max_height=1024):
     """

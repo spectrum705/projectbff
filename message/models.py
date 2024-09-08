@@ -148,8 +148,8 @@ class User(db.Document, UserMixin):
     def AddFriend(my_username,friends_Code):
         friend = User.objects(friend_code=friends_Code).first()
         user = User.objects(username=my_username).first()
-        print(">>",user.username)
-        print(">>",friend.username)        
+        # print(">>",user.username)
+        # print(">>",friend.username)        
         # TODO make it work with link
         if friend and (friend.username not in user.partners) and (friend!=user):
             print("inside if >>>")

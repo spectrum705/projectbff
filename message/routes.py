@@ -170,47 +170,43 @@ def reset_password(reset_code):
 @login_required
 def add_friend(code=None):
     
-    try:
-        if code:
-            code=code.upper().strip()
-            print("got code from URL:", code)
+    # try:
+    if code:
+        code=code.upper().strip()
+        print("got code from URL:", code)
+        
+        print("USERname my:",current_user["username"])
+        status,f_name = User.AddFriend(my_username=current_user["username"],friends_Code=code)
+        if status:
+            flash(f" Ahoy ! {f_name} added as your friend 😊🫱🏼‍🫲🏼","success" )
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid friend Code or User is already your friend 🍄🍄", "danger")
+            return redirect(url_for("home"))
+    
+    else:
+        form= AddFriendForm()
+
+        if form.validate_on_submit():
             
-            print("USERname my:",current_user["username"])
+            # user=search_user(current_user["username"])  
+            code= form.code_firstDigit.data + form.code_secondDigit.data + form.code_thirdDigit.data+form.code_fourthDigit.data  
+            # print("TYPE",type(code))
+            code=code.upper()
+            
+        
             status,f_name = User.AddFriend(my_username=current_user["username"],friends_Code=code)
             if status:
                 flash(f" Ahoy ! {f_name} added as your friend 😊🫱🏼‍🫲🏼","success" )
                 return redirect(url_for("home"))
             else:
                 flash("Invalid friend Code or User is already your friend 🍄🍄", "danger")
-                return redirect(url_for("home"))
-        
-        
-        
-        
-        
-        else:
-            form= AddFriendForm()
+                return redirect(url_for("add_friend"))
 
-            if form.validate_on_submit():
-                
-                # user=search_user(current_user["username"])  
-                code= form.code_firstDigit.data + form.code_secondDigit.data + form.code_thirdDigit.data+form.code_fourthDigit.data  
-                # print("TYPE",type(code))
-                code=code.upper()
-                
             
-                status,f_name = User.AddFriend(my_username=current_user["username"],friends_Code=code)
-                if status:
-                    flash(f" Ahoy ! {f_name} added as your friend 😊🫱🏼‍🫲🏼","success" )
-                    return redirect(url_for("home"))
-                else:
-                    flash("Invalid friend Code or User is already your friend 🍄🍄", "danger")
-                    return redirect(url_for("add_friend"))
-
-                
-            return render_template('new_friend_page.html', form=form)            
-    except Exception as error:
-        return render_template('error.html',error=error),404
+        return render_template('new_friend_page.html', form=form)            
+    # except Exception as error:
+    #     return render_template('error.html',error=error),404
 
 
 @app.route('/create', methods=['GET', 'POST'])

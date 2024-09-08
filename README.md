@@ -27,19 +27,6 @@ Take Project BFF with you wherever you go! Our mobile-friendly Progressive Web A
 
 
 
-## Demo
-[ProjectBff](https://projectbff.onrender.com/)
-Two demo Accounts with the following credentials have been created so you can test it out if you want.
-```bash
-username: alpha
-password: test1234
-```
-```bash
-username: beta
-password: test1234
-```
-
-
 ## Technical Details  and Local Development
 1. **Installation:**
 

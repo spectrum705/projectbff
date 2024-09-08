@@ -4,11 +4,30 @@
  background-repeat: no-repeat;background-size: 100% 100%;"
 ;
   >   -->
-<link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}">
-<!--Link to Font Awesome CDN-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script>
-<link rel="icon" type="image/png" href="/icon.png"/>
+  <head>
+
+
+    <title>Project Bff</title>
+   
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="color-scheme" content="only light">
+
+
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+    <!-- <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}"> -->
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='message.css') }}">
+    <!--Link to Font Awesome CDN-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script type="text/javascript" src="{{ url_for('static', filename='style.js') }}"></script>
+  </head>
 
 
 <!-- maybe add a media query for image sizes -->
@@ -38,7 +57,6 @@
     }
 }
 </style>
-
 
 <div class="reading_stuff" style="padding-bottom: 0; padding-top: 2em;">
     <h1 style="margin-left:1.4em ;">About Page</h1>
