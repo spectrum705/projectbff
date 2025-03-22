@@ -2,7 +2,7 @@ mongoengine
 flask==2.2.5
 pyjwt
 pillow
-gunicorn==22.0.0
+gunicorn==23.0.0
 GitPython
 python-dotenv
 dnspython

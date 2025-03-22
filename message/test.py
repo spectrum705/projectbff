@@ -90,7 +90,7 @@ def process_text(content):
             paragraphs_list.append(paragraph.strip())
 
     return paragraphs_list, links_list
-
+#TODO test image size limit for render
 # Example usage
 content = """
 This is a sample paragraph with a link http://example.com

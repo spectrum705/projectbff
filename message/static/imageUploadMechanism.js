@@ -11,7 +11,7 @@ fileInput.addEventListener("change", function (event) {
     // var maxSize = 4 * 1024 * 1024;
     
     
-    var totalSizeLimit = 20 * 1024 * 1024; // 4.5 MB in bytes
+    var totalSizeLimit = 10 * 1024 * 1024; // 
     var totalSize = 0;
     var imageFiles = event.target.files;
     var allowedTypes = ['image/jpeg','image/jpg', 'image/png', 'image/gif'];
@@ -39,7 +39,7 @@ fileInput.addEventListener("change", function (event) {
     if (totalSize > totalSizeLimit) {
         // Display a warning pop-up message
         
-        alert("Limit exceeded. You can only upload upto 20mb of images In total.");
+        alert("Limit exceeded. You can only upload upto 10mb of images In total.");
         
         // Clear the file input field
         event.target.value = "";
